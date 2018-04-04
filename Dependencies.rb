@@ -7,9 +7,9 @@
 #     qtpositioning5-dev libqt5sensors5-dev qtmultimedia5-dev libffi-dev \
 #     curl python erlang-base`
 
-class dependencies {
-  class linux {
-    def :supercollider do
+class Dependencies
+  class Raspberry
+    def self.supercollider
       dep = []
       dep.push("curl")
       dep.push("git")
@@ -39,19 +39,42 @@ class dependencies {
       return dep
     end
 
-    def :server do
+    def self.aubio
+      dep = []
+      dep.push("curl")
+      dep.push("git")
+
+      dep.push("gcc")
+      dep.push("make")
+      dep.push("cmake")
+      dep.push("python")
+      return dep
+    end
+
+    def self.osmid
+      dep = []
+      dep.push("curl")
+      dep.push("git")
+
+      dep.push("gcc")
+      dep.push("g++")
+      dep.push("make")
+      dep.push("cmake")
+      return dep
+    end
+
+    def self.server
       dep = []
       dep.push("curl")
       dep.push("git")
 
       dep.push("ruby")
       dep.push("ruby-dev")
-      dep.push("python")
       dep.push("erlang-base")
       return dep
     end
 
-    def :gui do
+    def self.gui
       dep = []
       dep.push("curl")
       dep.push("git")
@@ -76,40 +99,98 @@ class dependencies {
       dep.push("libffi-dev")
       return dep
     end
-  }
-}
+  end
 
-#dep = []
-#dep.push("g++")
-#dep.push("ruby")
-#dep.push("ruby-dev")
-#dep.push("pkg-config")
-#dep.push("git")
-#dep.push("libjack-jackd2-dev")
-#dep.push("libsndfile1-dev")
-#dep.push("libasound2-dev")
-#dep.push("libavahi-client-dev")
-#dep.push("libicu-dev")
-#dep.push("libreadline6-dev")
-#dep.push("libfftw3-dev")
-#dep.push("libxt-dev")
-#dep.push("libudev-dev")
-#dep.push("libxt-dev")
-#dep.push("cmake")
-#dep.push("libboost-dev")
-#dep.push("libqwt-qt5-dev")
-#dep.push("libqt5scintilla2-dev")
-#dep.push("libqt5svg5-dev")
-#dep.push("qt5-qmake")
-#dep.push("qt5-default")
-#dep.push("qttools5-dev")
-#dep.push("qttools5-dev-tools")
-#dep.push("qtdeclarative5-dev")
-#dep.push("libqt5webkit5-dev")
-#dep.push("qtpositioning5-dev")
-#dep.push("libqt5sensors5-dev")
-#dep.push("qtmultimedia5-dev")
-#dep.push("libffi-dev")
-#dep.push("curl")
-#dep.push("python")
-#dep.push("erlang-base")
+  class Linux
+    def self.supercollider
+      dep = []
+      dep.push("curl")
+      dep.push("git")
+
+      dep.push("gcc >= 4.8.0")
+      #dep.push("g++")
+      dep.push("make")
+      dep.push("cmake >= 2.8.11")
+      dep.push("libc6-dev")
+      dep.push("libjack-jackd2-dev")
+      dep.push("libsndfile1-dev >= 1.0.0")
+      dep.push("libasound2-dev")
+      dep.push("libavahi-client-dev")
+      dep.push("libicu-dev")
+      dep.push("libreadline6-dev")
+      dep.push("libfftw3-dev")
+      dep.push("libxt-dev")
+      dep.push("libudev-dev")
+      dep.push("pkg-config")
+
+      dep.push("qt5-default")
+      dep.push("qt5-qmake")
+      dep.push("qttools5-dev")
+      dep.push("qttools5-dev-tools")
+      dep.push("qtdeclarative5-dev")
+      dep.push("libqt5webkit5-dev")
+      return dep
+    end
+
+    def self.aubio
+      dep = []
+      dep.push("curl")
+      dep.push("git")
+
+      dep.push("gcc")
+      dep.push("make")
+      dep.push("cmake")
+      dep.push("python")
+      return dep
+    end
+
+    def self.osmid
+      dep = []
+      dep.push("curl")
+      dep.push("git")
+
+      dep.push("gcc")
+      dep.push("g++")
+      dep.push("make")
+      dep.push("cmake")
+      return dep
+    end
+
+    def self.server
+      dep = []
+      dep.push("curl")
+      dep.push("git")
+
+      dep.push("ruby")
+      dep.push("ruby-dev")
+      dep.push("erlang-base")
+      return dep
+    end
+
+    def self.gui
+      dep = []
+      dep.push("curl")
+      dep.push("git")
+
+      dep.push("g++")
+      dep.push("make")
+      dep.push("cmake")
+      dep.push("qt5-default")
+      dep.push("qt5-qmake")
+      dep.push("qttools5-dev")
+      dep.push("qttools5-dev-tools")
+      dep.push("qtdeclarative5-dev")
+      dep.push("libqt5webkit5-dev")
+      dep.push("qtpositioning5-dev")
+      dep.push("libqt5sensors5-dev")
+      dep.push("qtmultimedia5-dev")
+      dep.push("libxt-dev")
+      dep.push("libboost-dev")
+      dep.push("libqwt-qt5-dev")
+      dep.push("libqt5scintilla2-dev")
+      dep.push("libqt5svg5-dev")
+      dep.push("libffi-dev")
+      return dep
+    end
+  end
+end
