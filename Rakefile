@@ -22,8 +22,10 @@ end
 # Application/library versions built by this script.
 MIN_SUPERCOLLIDER_VERSION = "3.9"
 SUPERCOLLIDER_VERSION = "3.9.1"
+
 MIN_SC_PLUGINS_VERSION = "3.9.0"
 SC_PLUGINS_VERSION = "3.9.0" # 3.9.1 is currently in pre-release and I've had issues installing it, but 3.9.0 seems to work fine.
+
 AUBIO_VERSION = "c6ae035" # v0.4.6
 OSMID_VERSION = "391f35f789f18126003d2edf32902eb714726802"
 RUGGED_VERSION = "0.26.0"
@@ -36,12 +38,10 @@ distroType = :none
 
 all_dependencies_installed = false
 
-text_cyan = '\033[1;36m'
-text_nc = '\033[0m'
-
 # task build: %w[install_all_dependency_packages supercollider build_aubio build_osmid build_erlang_files compile_extensions build_documentation build_qt_docs build_gui]
 task :default => ["build"]
 
+desc "Build Sonic Pi (default task)"
 task :build, [:sonic_pi_root] => [
   "install_all_dependency_packages",
   "supercollider",
@@ -60,10 +60,7 @@ task :build, [:sonic_pi_root] => [
   args.with_defaults(:sonic_pi_root => File.join(File.expand_path(Dir.pwd), "build", "sonic-pi"))
 end
 
-task :build_supercollider do
-  build_supercollider
-end
-
+desc "Install all dependency packages for building Sonic Pi"
 task :install_all_dependency_packages do
   OS = ask_if_raspbian if (OS == :linux_arm)
   case OS
@@ -74,6 +71,8 @@ task :install_all_dependency_packages do
     dependencies = Dependencies::Raspberry.supercollider
     install_packages(dependencies, pkg_manager)
     dependencies = Dependencies::Raspberry.aubio
+    install_packages(dependencies, pkg_manager)
+    dependencies = Dependencies::Raspberry.osmid
     install_packages(dependencies, pkg_manager)
     dependencies = Dependencies::Raspberry.server
     install_packages(dependencies, pkg_manager)
@@ -89,6 +88,8 @@ task :install_all_dependency_packages do
     dependencies = Dependencies::Linux.supercollider
     install_packages(dependencies, pkg_manager)
     dependencies = Dependencies::Linux.aubio
+    install_packages(dependencies, pkg_manager)
+    dependencies = Dependencies::Linux.osmid
     install_packages(dependencies, pkg_manager)
     dependencies = Dependencies::Linux.server
     install_packages(dependencies, pkg_manager)
@@ -132,6 +133,7 @@ task :supercollider do
   end
 end
 
+desc "Build Supercollider from source"
 task :build_supercollider do
   OS = ask_if_raspbian if (OS == :linux_arm)
 
@@ -241,6 +243,7 @@ task :build_supercollider do
   end
 end
 
+desc "Build Aubio from source"
 task :build_aubio do
   OS = ask_if_raspbian if (OS == :linux_arm)
 
@@ -265,7 +268,9 @@ task :build_aubio do
   end
 end
 
+desc "Copy Sonic Pi server files to build folder"
 task :copy_server_files do
+  print_coloured_text("Copying Sonic Pi server files to build folder...")
   FileUtils.cp('CHANGELOG.md', File.join('build','sonic-pi'))
   FileUtils.cp('COMMUNITY.md', File.join('build','sonic-pi'))
   FileUtils.cp('CONTRIBUTORS.md', File.join('build','sonic-pi'))
@@ -274,16 +279,22 @@ task :copy_server_files do
   replace_dir(File.join('app','server'), File.join('build','sonic-pi','app','server'))
 end
 
+desc "Copy Sonic Pi QT GUI files to build folder"
 task :copy_gui_files do
+  print_coloured_text("Copying Sonic Pi QT GUI files to build folder...")
   replace_dir(File.join('app','gui','qt'), File.join('build','sonic-pi','app','gui','qt'))
   #replace_dir(File.join('..','app','gui','html'), File.join('sonic-pi','app','gui','html')) # Not currently functional
 end
 
+desc "Copy Sonic Pi '/bin' folder to build folder"
 task :copy_bin_folder do
+  print_coloured_text("Copying Sonic Pi '/bin' folder to build folder...")
   replace_dir(File.join('bin'), File.join('build','sonic-pi','bin'))
 end
 
+desc "Copy Sonic Pi '/etc' folder to build folder"
 task :copy_etc_folder do
+  print_coloured_text("Copying Sonic Pi '/etc' folder to build folder...")
   replace_dir(File.join('etc','buffers'), File.join('build','sonic-pi','etc','buffers'))
   replace_dir(File.join('etc','doc'), File.join('build','sonic-pi','etc','doc')) # Only needed at build time
   replace_dir(File.join('etc','examples'), File.join('build','sonic-pi','etc','examples')) # Only needed at build time
@@ -293,6 +304,7 @@ task :copy_etc_folder do
   #replace_dir(File.join('..','etc','wavetables'), File.join('sonic-pi','etc','wavetables')) # Not currently used
 end
 
+desc "Build osmid from source"
 task :build_osmid, [:sonic_pi_root] do |t, args|
   args.with_defaults(:sonic_pi_root => File.join(File.expand_path(Dir.pwd), "build", "sonic-pi"))
 
@@ -313,7 +325,7 @@ task :build_osmid, [:sonic_pi_root] do |t, args|
       %Q(cmake ..),
       %Q(make)
     ])
-    print_coloured_text("Installing osmid")
+    print_coloured_text("Installing osmid...")
     exec_commands([
       %Q(cd build/osmid/build), # Return to where we were before
       %Q(mkdir -p #{args.sonic_pi_root}/app/server/native/linux/osmid),
@@ -325,6 +337,7 @@ task :build_osmid, [:sonic_pi_root] do |t, args|
   end
 end
 
+desc "Build Sonic Pi Erlang files"
 task :build_erlang_files, [:sonic_pi_root] do |t, args|
   args.with_defaults(:sonic_pi_root => File.join(File.expand_path(Dir.pwd), "build", "sonic-pi"))
   OS = ask_if_raspbian if (OS == :linux_arm)
@@ -366,22 +379,29 @@ task :build_erlang_files, [:sonic_pi_root] do |t, args|
   end
 end
 
+desc "Compile Sonic Pi ruby server extensions"
 task :compile_extensions, [:sonic_pi_root] do |t, args|
   args.with_defaults(:sonic_pi_root => File.join(File.expand_path(Dir.pwd), "build", "sonic-pi"))
+  print_coloured_text("Compiling Sonic Pi server extensions...")
   ruby File.join(args.sonic_pi_root,'app','server','ruby','bin','compile-extensions.rb')
 end
 
+desc "Build Sonic Pi documention"
 task :build_documentation, [:sonic_pi_root] do |t, args|
   args.with_defaults(:sonic_pi_root => File.join(File.expand_path(Dir.pwd), "build", "sonic-pi"))
+  print_coloured_text("Building documentation and applying translations...")
   ruby File.join(args.sonic_pi_root,'app','server','ruby','bin','i18n-tool.rb') + " -t"
 end
 
+desc "Build Sonic Pi QT docs"
 task :build_qt_docs, [:sonic_pi_root] do |t, args|
+  print_coloured_text("Building Sonic Pi QT docs...")
   args.with_defaults(:sonic_pi_root => File.join(File.expand_path(Dir.pwd), "build", "sonic-pi"))
   exec_bash(%Q(cp -f #{args.sonic_pi_root}/app/gui/qt/ruby_help.tmpl #{args.sonic_pi_root}/app/gui/qt/ruby_help.h))
   ruby File.join(args.sonic_pi_root,'app','server','ruby','bin','qt-doc.rb') + ' -o ' + File.join(args.sonic_pi_root,'app','gui','qt','ruby_help.h')
 end
 
+desc "Build Sonic Pi QT GUI"
 task :build_gui, [:sonic_pi_root] do |t, args|
   args.with_defaults(:sonic_pi_root => File.join(File.expand_path(Dir.pwd), "build", "sonic-pi"))
   OS = ask_if_raspbian if (OS == :linux_arm)
@@ -390,6 +410,7 @@ task :build_gui, [:sonic_pi_root] do |t, args|
   when :raspberry
   when :linux
     install_packages(Dependencies::Linux.gui, pkg_manager) if (all_dependencies_installed == false)
+    print_coloured_text("Building QT GUI...")
     exec_commands([
       %Q(cd #{args.sonic_pi_root}/app/gui/qt),
       %Q(lrelease SonicPi.pro),
@@ -401,7 +422,9 @@ task :build_gui, [:sonic_pi_root] do |t, args|
   end
 end
 
+desc "Clean build folder"
 task :clean_build_folder do
+  print_coloured_text("Cleaning build folder...")
   FileUtils.remove_dir(File.join('build','sonic-pi','etc','docs'))
   FileUtils.remove_dir(File.join('build','sonic-pi','etc','examples'))
 end
