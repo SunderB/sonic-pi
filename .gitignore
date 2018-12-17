@@ -1,3 +1,6 @@
+# Build folders
+build/
+
 # Compiled things
 # --------------
 
@@ -121,9 +124,5 @@ etc/doc/generated/
 app/server/vendor/ffi-1.9.17/ext/ffi_c/extconf.h
 app/server/vendor/ffi-1.9.17/ext/ffi_c/Makefile
 
-## Compiled files
-build/sonic-pi/
-build/supercollider/
-build/sc3-plugins/
-build/aubio/
-build/osmid/
+## Rake temporary files
+.rake_tasks~
