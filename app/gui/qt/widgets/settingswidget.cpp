@@ -365,10 +365,31 @@ QGroupBox* SettingsWidget::createEditorPrefsTab() {
     debug_box_layout->addWidget(clear_output_on_run);
     debug_box->setLayout(debug_box_layout);
 
+
+    QGroupBox *language_box = new QGroupBox(tr("Language"));
+    language_box->setToolTip(tr("Configure language settings"));
+
+    language_combo = new QComboBox();
+    add_locale_combo_box_entries(language_combo);
+    language_combo->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
+    language_combo->setMinimumContentsLength(2);
+    language_combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+
+    QLabel *language_option_label = new QLabel;
+    language_option_label->setText(tr("UI & Tutorial Language (Requires a restart to take effect)"));
+    language_option_label->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
+
+    QVBoxLayout *language_box_layout = new QVBoxLayout;
+    language_box_layout->addWidget(language_combo);
+    language_box_layout->addWidget(language_option_label);
+
+    language_box->setLayout(language_box_layout);
+
     gridEditorPrefs->addWidget(editor_display_box, 0, 0);
     gridEditorPrefs->addWidget(editor_look_feel_box, 0, 1);
     gridEditorPrefs->addWidget(automation_box, 1, 1);
     gridEditorPrefs->addWidget(debug_box, 1, 0);
+    gridEditorPrefs->addWidget(language_box, 2, 0);
 
     editor_box->setLayout(gridEditorPrefs);
     return editor_box;
@@ -629,7 +650,7 @@ void SettingsWidget::autoIndentOnRun() {
 }
 
 void SettingsWidget::openSonicPiNet() {
-  QDesktopServices::openUrl(QUrl("http://sonic-pi.net", QUrl::TolerantMode));
+  QDesktopServices::openUrl(QUrl("https://sonic-pi.net", QUrl::TolerantMode));
 }
 
 void SettingsWidget::updateVersionInfo( QString info_string, QString visit, bool sonic_pi_net_visible, bool check_now_visible) {
