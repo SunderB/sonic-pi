@@ -94,9 +94,9 @@ void sleep(int x) { Sleep((x)*1000); }
 
 
 #ifdef Q_OS_MAC
-MainWindow::MainWindow(QApplication &app, bool i18n, QMainWindow* splash)
+MainWindow::MainWindow(QApplication &app, QString locale, bool i18n, QMainWindow* splash)
 #else
-MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
+MainWindow::MainWindow(QApplication &app, QString locale, bool i18n, QSplashScreen* splash)
 #endif
 {
     app.installEventFilter(this);
@@ -3226,6 +3226,7 @@ void MainWindow::writeSettings()
 {
     std::cout << "[GUI] - writing settings" << std::endl;
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "sonic-pi.net", "gui-settings");
+    settings.setValue("prefs/locale", locale_combo_index_to_locale_str(locale_combo->currentIndex()));
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("first_time", 0);
@@ -3275,6 +3276,22 @@ void MainWindow::writeSettings()
     settings.setValue("docsplitState", docsplit->saveState());
     settings.setValue("windowState", saveState());
     settings.setValue("windowGeom", saveGeometry());
+}
+
+void MainWindow::add_locale_combo_box_entries(QComboBox* combo) {
+  // Add locale combo entries
+  std::cout << "[Debug] Adding locale combo box entries..." << std::endl;
+  std::cout << (std::to_string(static_cast<int>(availableLocales.size()))) << std::endl;
+
+  for (auto const &locale_entry : availableLocales) {
+    std::cout << "[Debug] Adding locale " << locale_entry.second.toUtf8().data() << " to the combo box" << std::endl;
+    if (locale_entry.second != "system_locale") {
+      // Add the language's name to the combo box
+      combo->addItem(localeNames[locale_entry.second]);
+    } else {
+      combo->addItem(tr("Use system locale"));
+    }
+  }
 }
 
 void MainWindow::loadFile(const QString &fileName, SonicPiScintilla* &text)

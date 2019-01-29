@@ -154,6 +154,8 @@ private:
     QSlider *system_vol_slider;
     QSlider *gui_transparency_slider;
 
+    QComboBox *language_combo;
+
     // TODO
     bool i18n = true;
     QGroupBox* createAudioPrefsTab();
