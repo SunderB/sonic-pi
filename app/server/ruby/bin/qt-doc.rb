@@ -39,6 +39,49 @@ FileUtils::mkdir "#{qt_gui_path}/info/"
 FileUtils::rm_rf "#{qt_gui_path}/book/"
 FileUtils::mkdir "#{qt_gui_path}/book/"
 
+lang_names = Hash[
+  "bs" => "Bosanski/босански", # Bosnian
+  "ca" => "Català", # Catalan
+  "cs" => "Čeština", # Czech
+  "da" => "Dansk", # Danish
+  "de" => "Deutsch", # German
+  "el" => "ελληνικά", # Greek
+  "en-US" => "English (USA)", # English (USA)
+  "es" => "Español", # Spanish
+  "et" => "Eesti keel", # Estonian
+  "fa" => "فارسی", # Persian
+  "fi" => "Suomi", # Finnish
+  "fr" => "Français", # French
+  "gl" => "Galego", # Galician
+  "he" => "עברית", # Hebrew
+  "hi" => "हिन्दी", # Hindi
+  "hu" => "Magyar", # Hungarian
+  "id" => "Bahasa Indonesia", # Indonesian
+  "is" => "Íslenska", # Icelandic
+  "it" => "Italiano", # Italian
+  "ja" => "日本語/にほんご", # Japanese
+  "ka" => "ქართული", # Georgian
+  "ko" => "한국어", # Korean
+  "nb" => "Norsk Bokmål", # Norwegian Bokmål
+  "nl" => "Nederlands", # Dutch (Netherlands)
+  "pl" => "Polski", # Polish
+  "pt" => "Português", # Portuguese
+  "pt-BR" => "Português do Brasil", # Brazilian Portuguese
+  "ro" => "Română", # Romanian
+  "ru" => "Pусский", # Russian
+  "sk" => "Slovenčina/Slovenský Jazyk", # Slovak/Slovakian
+  "sl" => "Slovenščina/Slovenski Jezik", # Slovenian
+  "sv" => "Svenska", # Swedish
+  "tr" => "Türkçe", # Turkish
+  "ug" => "ئۇيغۇر تىلى", # Uyghur
+  "uk" => "Українська", # Ukranian
+  "vi" => "Tiếng Việt", # Vietnamese
+  "zh" => "繁體中文", # Mandarin Chinese (Traditional)
+  "zh-Hans" => "简体中文", # Mandarin Chinese (Simplified)
+  "zh-Hk" => "廣東話", # Cantonese
+  "zh-TW" => "臺灣華語" # Taiwanese Mandarin
+]
+
 docs = []
 filenames = []
 count = 0
@@ -54,6 +97,7 @@ end.parse!
 # valid names: lang, synths, fx, samples, examples
 make_tab = lambda do |name, doc_items, titleize=false, should_sort=true, with_keyword=false, page_break=false, chapters=false, lang="en"|
   return if doc_items.empty?
+
   list_widget = "#{name}NameList"
   layout = "#{name}Layout"
   tab_widget = "#{name}TabWidget"
@@ -155,9 +199,7 @@ make_tab = lambda do |name, doc_items, titleize=false, should_sort=true, with_ke
   docs
 end
 
-
 make_tutorial = lambda do |lang|
-
   docs << "\n  // language #{lang}\n"
   tutorial_html_map = {}
   if lang == "en" then
@@ -207,6 +249,61 @@ ruby_html_map = {
 #  "loop" => "Loop forever",
 }
 
+languages =
+  Dir[File.expand_path("../lang/sonic-pi-tutorial-*.po", tutorial_path)].
+  map { |p| File.basename(p).gsub(/sonic-pi-tutorial-(.*?).po/, '\1') }
+# docs << "\n  QString systemLocale = QLocale::system().name();\n\n" unless languages.empty?
+
+# Add English to the languages, and sort languages alphabetically
+languages = languages.push("en-US")
+languages = languages.sort_by {|l| l.downcase}
+
+# Make a function to define the locale list map -----
+locale_arrays = []
+locale_arrays << "void MainWindow::defineLocaleLists() {\n"
+locale_arrays << "availableLocales = {\n"
+# Add each language
+locale_arrays << "{0, \"system_locale\"}"
+i = 1
+languages.each do |lang|
+  locale_arrays << ",\n"
+  locale_arrays << "{#{i.to_s}, \"#{lang}\"}"
+  i += 1
+end
+# End the map
+locale_arrays << "\n};\n"
+
+# Create a map of the locales to their indices in availableLocales, called localeIndex
+locale_arrays << "localeIndex = {\n"
+# Add each language
+locale_arrays << "{\"system_locale\", 0}"
+i = 1
+languages.each do |lang|
+  locale_arrays << ",\n"
+  locale_arrays << "{\"#{lang}\", #{i.to_s}}"
+  i += 1
+end
+# End the map
+locale_arrays << "\n};\n"
+
+# Create a map of the locales to their native names, called localeNames
+locale_arrays << "localeNames = {\n"
+# Add each language
+locale_arrays << "{\"system_locale\", \"\"}"
+languages.each do |lang|
+  locale_arrays << ",\n"
+  locale_arrays << "{\"#{lang}\", \"#{lang_names[lang]}\"}"
+end
+# End the map
+locale_arrays << "\n};\n"
+
+# End the function
+locale_arrays << "};\n"
+# -----
+
+# Remove English for now
+languages.delete("en-US")
+
 # this will sort locale code names by reverse length
 # to make sure that a more specific locale is handled
 # before the generic language code,
@@ -220,7 +317,7 @@ docs << "\n  QString systemLocale = QLocale::system().uiLanguages()[0];\n\n" unl
 
 # first, try to match all non-default languages (those that aren't "en")
 languages.each do |lang|
-  docs << "if (systemLocale.startsWith(\"#{lang}\")) {\n"
+  docs << "if (locale.startsWith(\"#{lang}\")) {\n"
   make_tutorial.call(lang)
   docs << "} else "
 end
@@ -277,7 +374,15 @@ new_content << "// AUTO-GENERATED-DOCS\n"
 new_content << "// Do not manually add any code below this comment\n"
 new_content << "// otherwise it may be removed\n"
 new_content << "\n"
-new_content << "void MainWindow::initDocsWindow() {\n"
+new_content << "#include <map>\n"
+new_content << "\n"
+#new_content << locale_array_defs
+#new_content << "\n"
+#new_content << "\nvoid MainWindow::defineLocaleLists() {\n"
+new_content << locale_arrays
+#new_content << "};"
+new_content << "\n"
+new_content << "void MainWindow::initDocsWindow(QString locale) {\n"
 new_content += docs
 new_content << "}\n"
 
