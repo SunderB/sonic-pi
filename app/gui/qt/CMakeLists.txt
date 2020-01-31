@@ -90,6 +90,7 @@ set(SOURCES
     ${APP_ROOT}/widgets/sonicpilog.h
     ${APP_ROOT}/utils/sonicpiapis.h
     ${APP_ROOT}/utils/ruby_help.h
+    ${CMAKE_BINARY_DIR}/utils/main_window_paths.h
     ${APP_ROOT}/model/settings.h
     )
 
@@ -131,6 +132,18 @@ target_link_libraries(${APP_NAME}
     Qt5::Concurrent
     Qt5::Network
     Threads::Threads)
+
+# Generate ${CMAKE_BINARY_DIR}/utils/main_window_paths.h containing relative paths to the different parts of Sonic Pi
+message(STATUS "Working out relative paths from the build dir, and generating ${CMAKE_BINARY_DIR}/utils/main_window_paths.h...")
+file(RELATIVE_PATH rootPath "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/../../..")
+file(RELATIVE_PATH serverPath "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/../../../app/server")
+file(RELATIVE_PATH qtGuiPath "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}")
+file(RELATIVE_PATH etcPath "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/../../../etc")
+set(rootPath "QCoreApplication::applicationDirPath() + \"${rootPath}\"")
+set(serverPath "QCoreApplication::applicationDirPath() + \"${serverPath}\"")
+set(qtGuiPath "QCoreApplication::applicationDirPath() + \"${qtGuiPath}\"")
+set(etcPath "QCoreApplication::applicationDirPath() + \"${etcPath}\"")
+configure_file("${APP_ROOT}/utils/main_window_paths.tmpl" "${CMAKE_BINARY_DIR}/utils/main_window_paths.h" @ONLY)
 
 # Compile options and OS specific libraries
 if(WIN32)
