@@ -63,6 +63,7 @@
 #include "widgets/settingswidget.h"
 
 #include "utils/ruby_help.h"
+#include "utils/main_window_paths.h"
 
 #include "dpi.h"
 
@@ -335,6 +336,9 @@ bool MainWindow::initAndCheckPorts() {
 
 void MainWindow::initPaths() {
     QString root_path = rootPath();
+    QString server_path = serverPath();
+    QString qt_gui_path = qtGuiPath();
+    QString etc_path = etcPath();
 
 #if defined(Q_OS_WIN)
     ruby_path = QDir::toNativeSeparators(root_path + "/app/server/native/ruby/bin/ruby.exe");
@@ -350,11 +354,23 @@ void MainWindow::initPaths() {
         ruby_path = "ruby";
     }
 
-    ruby_server_path = QDir::toNativeSeparators(root_path + "/app/server/ruby/bin/sonic-pi-server.rb");
-    port_discovery_path = QDir::toNativeSeparators(root_path + "/app/server/ruby/bin/port-discovery.rb");
-    fetch_url_path = QDir::toNativeSeparators(root_path + "/app/server/ruby/bin/fetch-url.rb");
-    sample_path = QDir::toNativeSeparators(root_path + "/etc/samples");
+    // Server paths
+    ruby_server_path       = QDir::toNativeSeparators(server_path + "/ruby/bin/sonic-pi-server.rb");
+    port_discovery_path    = QDir::toNativeSeparators(server_path + "/ruby/bin/port-discovery.rb");
+    fetch_url_path         = QDir::toNativeSeparators(server_path + "/ruby/bin/fetch-url.rb");
+    init_script_path       = QDir::toNativeSeparators(server_path + "/ruby/bin/init-script.rb");
+    exit_script_path       = QDir::toNativeSeparators(server_path + "/ruby/bin/exit-script.rb");
 
+    // Qt GUI paths
+    qt_app_theme_path      = QDir::toNativeSeparators(qt_gui_path + "/theme/app.qss");
+    qt_browser_dark_css    = QDir::toNativeSeparators(qt_gui_path + "/theme/dark/doc-styles.css");
+    qt_browser_light_css   = QDir::toNativeSeparators(qt_gui_path + "/theme/light/doc-styles.css");
+    qt_browser_hc_css      = QDir::toNativeSeparators(qt_gui_path + "/theme/high_contrast/doc-styles.css");
+
+    // etc paths
+    sample_path            = QDir::toNativeSeparators(etc_path + "/samples");
+
+    // User data and log paths
     sp_user_path           = QDir::toNativeSeparators(sonicPiHomePath() + "/.sonic-pi");
     sp_user_tmp_path       = QDir::toNativeSeparators(sp_user_path + "/.writableTesterPath");
     log_path               = QDir::toNativeSeparators(sp_user_path + "/log");
@@ -363,15 +379,6 @@ void MainWindow::initPaths() {
     gui_log_path           = QDir::toNativeSeparators(log_path + QDir::separator() + "gui.log");
     process_log_path       = QDir::toNativeSeparators(log_path + "/processes.log");
     scsynth_log_path       = QDir::toNativeSeparators(log_path + QDir::separator() + "scsynth.log");
-
-    init_script_path       = QDir::toNativeSeparators(root_path + "/app/server/ruby/bin/init-script.rb");
-    exit_script_path       = QDir::toNativeSeparators(root_path + "/app/server/ruby/bin/exit-script.rb");
-
-    qt_app_theme_path      = QDir::toNativeSeparators(root_path + "/app/gui/qt/theme/app.qss");
-
-    qt_browser_dark_css    = QDir::toNativeSeparators(root_path + "/app/gui/qt/theme/dark/doc-styles.css");
-    qt_browser_light_css   = QDir::toNativeSeparators(root_path + "/app/gui/qt/theme/light/doc-styles.css");
-    qt_browser_hc_css      = QDir::toNativeSeparators(root_path + "/app/gui/qt/theme/high_contrast/doc-styles.css");
 
     // attempt to create log directory
     QDir logDir(log_path);
@@ -1080,7 +1087,7 @@ void MainWindow::startRubyServer(){
     // Register server pid for potential zombie clearing
     QStringList regServerArgs;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 3, 0)
-    regServerArgs << QDir::toNativeSeparators(rootPath() + "/app/server/ruby/bin/task-register.rb")<< QString::number(serverProcess->processId());
+    regServerArgs << QDir::toNativeSeparators(serverPath() + "/ruby/bin/task-register.rb")<< QString::number(serverProcess->processId());
 #endif
     QProcess *regServerProcess = new QProcess();
     regServerProcess->start(ruby_path, regServerArgs);
