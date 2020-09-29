@@ -1,5 +1,5 @@
 ---
-name: Boot error report
+name: Boot error report 📋
 about: Report a critical boot error
 title: Critical error! - Could not boot Sonic Pi Server
 labels: boot
