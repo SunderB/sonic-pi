@@ -787,6 +787,7 @@ module SonicPi
 
       display_name = get_job_display_name(info[:type], info[:name])
 
+      info[:name].freeze
       info.freeze
       display_name.freeze
 
