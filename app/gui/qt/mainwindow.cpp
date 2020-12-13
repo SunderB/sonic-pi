@@ -94,9 +94,9 @@ void sleep(int x) { Sleep((x)*1000); }
 
 
 #ifdef Q_OS_MAC
-MainWindow::MainWindow(QApplication &app, QString locale, bool i18n, QMainWindow* splash)
+MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QMainWindow* splash)
 #else
-MainWindow::MainWindow(QApplication &app, QString locale, bool i18n, QSplashScreen* splash)
+MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashScreen* splash)
 #endif
 {
     app.installEventFilter(this);
@@ -186,7 +186,7 @@ MainWindow::MainWindow(QApplication &app, QString locale, bool i18n, QSplashScre
     // The implementation of this method is dynamically generated and can
     // be found in ruby_help.h:
     std::cout << "[GUI] - initialising documentation window" << std::endl;
-    initDocsWindow();
+    initDocsWindow(language);
 
     //setup autocompletion
     autocomplete->loadSamples(sample_path);
@@ -523,7 +523,8 @@ void MainWindow::setupWindowStructure() {
     prefsWidget->setAllowedAreas(Qt::RightDockWidgetArea);
     prefsWidget->setFeatures(QDockWidget::DockWidgetClosable);
 
-    settingsWidget = new SettingsWidget(server_osc_cues_port, piSettings, this);
+    settingsWidget = new SettingsWidget(server_osc_cues_port, i18n, piSettings, this);
+    connect(settingsWidget, SIGNAL(uiLanguageChanged(QString)), this, SLOT(changeUILanguage(QString)));
     connect(settingsWidget, SIGNAL(volumeChanged(int)), this, SLOT(changeSystemPreAmp(int)));
     connect(settingsWidget, SIGNAL(mixerSettingsChanged()), this, SLOT(mixerSettingsChanged()));
     connect(settingsWidget, SIGNAL(midiSettingsChanged()), this, SLOT(toggleMidi()));
@@ -1954,6 +1955,26 @@ void MainWindow::changeSystemPreAmp(int val, int silent)
     statusBar()->showMessage(tr("Updating System Volume..."), 2000);
 }
 
+void MainWindow::changeUILanguage(QString lang) {
+    piSettings->language = lang;
+    std::cout << "Using language: " << lang.toUtf8().constData() << std::endl;
+
+    QTranslator qtTranslator;
+    QTranslator translator;
+    QApplication* app = dynamic_cast<QApplication*>(parent());
+
+    i18n = translator.load("sonic-pi_" + lang, ":/lang/") || lang.startsWith("en") || lang == "C";
+    app->installTranslator(&translator);
+
+    qtTranslator.load("qt_" + lang, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app->installTranslator(&qtTranslator);
+
+    updateTranslatedUIText();
+    statusBar()->showMessage(tr("Updated UI language"), 5000);
+
+    //statusBar()->showMessage(tr("Updated UI language setting, please restart Sonic Pi to apply it"), 2000);
+}
+
 
 void MainWindow::changeScopeKindVisibility(QString name) {
   foreach (QAction *action, scopeKindVisibilityMenu->actions()) {
@@ -3183,6 +3204,8 @@ void MainWindow::readSettings() {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "sonic-pi.net", "gui-settings");
 
     // Read in preferences from previous session
+    piSettings->language = settings.value("prefs/language", "system_locale").toString();
+
     piSettings->show_buttons = settings.value("prefs/show-buttons", true).toBool();
     piSettings->show_tabs = settings.value("prefs/show-tabs", true).toBool();
     piSettings->show_log =  settings.value("prefs/show-log", true).toBool();
@@ -3230,7 +3253,7 @@ void MainWindow::writeSettings()
 {
     std::cout << "[GUI] - writing settings" << std::endl;
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "sonic-pi.net", "gui-settings");
-    settings.setValue("prefs/locale", locale_combo_index_to_locale_str(locale_combo->currentIndex()));
+    settings.setValue("prefs/language", piSettings->language);
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("first_time", 0);
@@ -3282,21 +3305,7 @@ void MainWindow::writeSettings()
     settings.setValue("windowGeom", saveGeometry());
 }
 
-void MainWindow::add_locale_combo_box_entries(QComboBox* combo) {
-  // Add locale combo entries
-  std::cout << "[Debug] Adding locale combo box entries..." << std::endl;
-  std::cout << (std::to_string(static_cast<int>(availableLocales.size()))) << std::endl;
 
-  for (auto const &locale_entry : availableLocales) {
-    std::cout << "[Debug] Adding locale " << locale_entry.second.toUtf8().data() << " to the combo box" << std::endl;
-    if (locale_entry.second != "system_locale") {
-      // Add the language's name to the combo box
-      combo->addItem(localeNames[locale_entry.second]);
-    } else {
-      combo->addItem(tr("Use system locale"));
-    }
-  }
-}
 
 void MainWindow::loadFile(const QString &fileName, SonicPiScintilla* &text)
 {
@@ -3419,8 +3428,7 @@ void MainWindow::updateDocPane2(QListWidgetItem *cur, QListWidgetItem *prev) {
     updateDocPane(cur);
 }
 
-void MainWindow::addHelpPage(QListWidget *nameList,
-        struct help_page *helpPages, int len) {
+void MainWindow::addHelpPage(QListWidget *nameList, struct help_page *helpPages, int len) {
     int i;
     struct help_entry entry;
     entry.pageIndex = docsCentral->count()-1;
@@ -3596,12 +3604,12 @@ void MainWindow::updateVersionNumber(QString v, int v_num,QString latest_v, int 
     if(v_num < latest_v_num) {
         QString info = QString(preamble + "\n\n" + print_version + "\n\n" + new_version).arg(version, latest_version);
         QString visit = tr("New version available!\nGet Sonic Pi %1").arg(latest_version);
-        settingsWidget->updateVersionInfo( info, visit, true, false);
+        settingsWidget->updateVersionInfo(info, visit, true, false);
     }
     else {
         QString info = (preamble + "\n\n" + print_version + "\n\n" + last_update_check).arg(version);
         QString visit = tr("Visit http://sonic-pi.net to download new version");
-        settingsWidget->updateVersionInfo( info, visit, false, true);
+        settingsWidget->updateVersionInfo(info, visit, false, true);
     }
 }
 
@@ -3883,5 +3891,121 @@ void MainWindow::updateContextWithCurrentWs() {
 
 void MainWindow::updateContext(int line, int index){
   contextPane->setContent(tr("Line: %1,  Position: %2").arg(line + 1).arg(index + 1));
+
+}
+
+void MainWindow::updateTranslatedUIText() {
+  // Widget titles
+  prefsWidget->setWindowTitle(tr("Preferences"));
+  scopeWidget->setWindowTitle(tr("Scope"));
+  outputWidget->setWindowTitle(tr("Log"));
+  incomingWidget->setWindowTitle(tr("Cues"));
+  contextWidget->setWindowTitle(tr("Context"));
+  docWidget->setWindowTitle(tr("Help"));
+
+  toolBar->setWindowTitle(tr("Tools"));
+
+  // Menu bar =====
+  // Live
+  liveMenu->setTitle(tr("&Live"));
+  runAct->setText(tr("Run"));
+  updateAction(runAct, runSc, tr("Run the code in the current buffer"));
+  stopAct->setText(tr("Stop"));
+  updateAction(stopAct, stopSc, tr("Stop all running code"));
+  recAct->setText(tr("Start Recording"));
+  updateAction(recAct, recSc, tr("Start recording to a WAV audio file"));
+  exitAct->setText(tr("Exit"));
+
+  // Code
+  codeMenu->setTitle(tr("&Code"));
+  saveAsAct->setText(tr("Save"));
+  updateAction(saveAsAct, saveAsSc, tr("Save current buffer as an external file"));
+  loadFileAct->setText(tr("Load"));
+  updateAction(loadFileAct, loadFileSc,  tr("Load an external file in the current buffer"));
+  textIncAct->setText(tr("Code Size Up"));
+  updateAction(textIncAct, textIncSc, tr("Increase Text Size"));
+  textDecAct->setText(tr("Code Size Down"));
+  updateAction(textDecAct, textDecSc, tr("Decrease Text Size"));
+  textAlignAct->setText(tr("Align Code"));
+  updateAction(textAlignAct, textAlignSc, tr("Align code to improve readability"));
+  showLineNumbersAct->setText(tr("Show Line Numbers"));
+  showAutoCompletionAct->setText(tr("Show Code Completion"));
+
+  // Audio
+  audioMenu->setTitle(tr("&Audio"));
+  audioSafeAct->setText(tr("Safe Audio Mode"));
+  audioTimingGuaranteesAct->setText(tr("Enforce Timing Guarantees"));
+  enableExternalSynthsAct->setText(tr("Enable External Synths"));
+  mixerInvertStereoAct->setText(tr("Invert Stereo"));
+  mixerForceMonoAct->setText(tr("Force Mono"));
+
+  // Visuals
+  displayMenu->setTitle(tr("&Visuals"));
+  scopeAct->setText(tr("Show Scopes"));
+  updateAction(scopeAct, scopeSc, tr("Toggle visibility of audio oscilloscope"));
+
+  // IO
+  ioMenu->setTitle(tr("&IO"));
+  midiEnabledAct->setText(tr("Enable Incoming MIDI Cues"));
+  enableOSCServerAct->setText(tr("Allow Incoming OSC"));
+  allowRemoteOSCAct->setText(tr("Allow OSC From Other Computers"));
+  ioMidiInMenu->setTitle(tr("MIDI Inputs"));
+  //ioMidiInMenu->addAction(tr("No Connected Inputs"));
+  ioMidiOutMenu->setTitle(tr("MIDI Outputs"));
+  //ioMidiOutMenu->addAction(tr("No Connected Outputs"));
+  ioMidiOutChannelMenu->setTitle(tr("Default MIDI Out Channel"));
+  // QAction *midiOutChanMenuAll = ioMidiOutChannelMenu->addAction(tr("All Channels"));
+  // QAction *midiOutChanMenu1 = ioMidiOutChannelMenu->addAction(tr("1"));
+  // QAction *midiOutChanMenu2 = ioMidiOutChannelMenu->addAction(tr("2"));
+  // QAction *midiOutChanMenu3 = ioMidiOutChannelMenu->addAction(tr("3"));
+  // QAction *midiOutChanMenu4 = ioMidiOutChannelMenu->addAction(tr("4"));
+  // QAction *midiOutChanMenu5 = ioMidiOutChannelMenu->addAction(tr("5"));
+  // QAction *midiOutChanMenu6 = ioMidiOutChannelMenu->addAction(tr("6"));
+  // QAction *midiOutChanMenu7 = ioMidiOutChannelMenu->addAction(tr("7"));
+  // QAction *midiOutChanMenu8 = ioMidiOutChannelMenu->addAction(tr("8"));
+  // QAction *midiOutChanMenu9 = ioMidiOutChannelMenu->addAction(tr("9"));
+  // QAction *midiOutChanMenu10 = ioMidiOutChannelMenu->addAction(tr("10"));
+  // QAction *midiOutChanMenu11 = ioMidiOutChannelMenu->addAction(tr("11"));
+  // QAction *midiOutChanMenu12 = ioMidiOutChannelMenu->addAction(tr("12"));
+  // QAction *midiOutChanMenu13 = ioMidiOutChannelMenu->addAction(tr("13"));
+  // QAction *midiOutChanMenu14 = ioMidiOutChannelMenu->addAction(tr("14"));
+  // QAction *midiOutChanMenu15 = ioMidiOutChannelMenu->addAction(tr("15"));
+  // QAction *midiOutChanMenu16 = ioMidiOutChannelMenu->addAction(tr("16"));
+  localIpAddressesMenu->setTitle(tr("Local IP Addresses"));
+  // QMenu *incomingOSCPortMenu = ioMenu->addMenu(tr("Incoming OSC Port"));
+
+  // View
+  viewMenu->setTitle(tr("&View"));
+  showLogAct->setText(tr("Show Log"));
+  showCuesAct->setText(tr("Show Cue Log"));
+  showContextAct->setText(tr("Show Code Context"));
+  logAutoScrollAct->setText(tr("Auto-Scroll Log"));
+  infoAct->setText(tr("Show Info"));
+  updateAction(infoAct, infoSc, tr("Toggle information about Sonic Pi"));
+  helpAct->setText(tr("Show Help"));
+  updateAction(helpAct, helpSc, tr("Toggle the visibility of the help pane"));
+  prefsAct->setText(tr("Show Preferences"));
+  updateAction(prefsAct, prefsSc, tr("Toggle the visibility of the preferences pane"));
+  focusEditorAct->setText(tr("Focus Editor"));
+  updateAction(focusEditorAct, focusEditorSc, tr("Place focus on the code editor"));
+  focusLogsAct->setText(tr("Focus Logs"));
+  updateAction(focusLogsAct, focusLogsSc, tr("Place focus on the log pane"));
+  focusContextAct->setText(tr("Focus Context"));
+  updateAction(focusContextAct, focusContextSc, tr("Place focus on the context pane"));
+  focusCuesAct->setText(tr("Focus Cues"));
+  updateAction(focusCuesAct, focusCuesSc, tr("Place focus on the cue event pane"));
+  focusPreferencesAct->setText(tr("Focus Preferences"));
+  updateAction(focusPreferencesAct, focusPreferencesSc, tr("Place focus on preferences"));
+  focusHelpListingAct->setText(tr("Focus Help Listing"));
+  updateAction(focusHelpListingAct, focusHelpListingSc, tr("Place focus on help listing"));
+  focusHelpDetailsAct->setText(tr("Focus Help Details"));
+  updateAction(focusHelpDetailsAct, focusHelpDetailsSc, tr("Place focus on help details"));
+  focusErrorsAct->setText(tr("Focus Errors"));
+  updateAction(focusErrorsAct, focusErrorsSc, tr("Place focus on errors"));
+  // =====
+
+  // Update text in other widgets
+  settingsWidget->updateTranslatedUIText()
+
 
 }

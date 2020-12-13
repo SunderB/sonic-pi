@@ -76,9 +76,9 @@ class MainWindow : public QMainWindow
 
     public:
 #if defined(Q_OS_MAC)
-        MainWindow(QApplication &ref, bool i18n, QMainWindow* splash);
+        MainWindow(QApplication &ref, QString language, bool i18n, QMainWindow* splash);
 #else
-        MainWindow(QApplication &ref, bool i18n, QSplashScreen* splash);
+        MainWindow(QApplication &ref, QString language, bool i18n, QSplashScreen* splash);
 #endif
 
         SonicPiOSCServer *sonicPiOSCServer;
@@ -91,14 +91,14 @@ class MainWindow : public QMainWindow
         void wheelEvent(QWheelEvent *event);
 
 
-        public slots:
+    public slots:
             void invokeStartupError(QString msg);
 
 signals:
         void settingsChanged();
 
-       private slots:
-
+    private slots:
+        void changeUILanguage(QString lang);
         void updateContext(int line, int index);
         void updateContextWithCurrentWs();
         void addCuePath(QString path, QString val);
@@ -288,7 +288,7 @@ signals:
         SonicPiScintilla* filenameToWorkspace(std::string filename);
         bool sendOSC(oscpkt::Message m);
         //   void initPrefsWindow();
-        void initDocsWindow();
+        void initDocsWindow(QString language);
         void refreshDocContent();
         void addHelpPage(QListWidget *nameList, struct help_page *helpPages,
                 int len);
@@ -308,6 +308,7 @@ signals:
         QString rootPath();
 
         void addUniversalCopyShortcuts(QTextEdit *te);
+        void updateTranslatedUIText();
 
   QMenu *liveMenu, *codeMenu, *audioMenu, *displayMenu, *viewMenu, *ioMenu, *ioMidiInMenu, *ioMidiOutMenu, *ioMidiOutChannelMenu, *localIpAddressesMenu, *themeMenu, *scopeKindVisibilityMenu;
 
@@ -363,8 +364,8 @@ signals:
 
         QToolBar *toolBar;
 
-  QAction *exitAct, *runAct, *stopAct, *saveAsAct, *loadFileAct, *recAct, *textAlignAct, *textIncAct, *textDecAct, *scopeAct, *infoAct, *helpAct, *prefsAct, *focusEditorAct, *focusLogsAct, *focusContextAct, *focusCuesAct, *focusPreferencesAct, *focusHelpListingAct, *focusHelpDetailsAct, *focusErrorsAct, *showLineNumbersAct, *showAutoCompletionAct, *showContextAct, *audioSafeAct, *audioTimingGuaranteesAct, *enableExternalSynthsAct, *mixerInvertStereoAct, *mixerForceMonoAct, *midiEnabledAct, *enableOSCServerAct, *allowRemoteOSCAct, *showLogAct, *showCuesAct, *logAutoScrollAct, *logCuesAct, *logSynthsAct, *clearOutputOnRunAct, *autoIndentOnRunAct, *showButtonsAct, *showTabsAct, *fullScreenAct, *lightThemeAct, *darkThemeAct, *proLightThemeAct, *proDarkThemeAct, *highContrastThemeAct, *showScopeLabelsAct;
-  QShortcut *runSc, *stopSc, *saveAsSc, *loadFileSc, *recSc, *textAlignSc, *textIncSc, *textDecSc, *scopeSc, *infoSc, *helpSc, *prefsSc, *focusEditorSc, *focusLogsSc, *focusContextSc, *focusCuesSc, *focusPreferencesSc, *focusHelpListingSc, *focusHelpDetailsSc, *focusErrorsSc;
+        QAction *exitAct, *runAct, *stopAct, *saveAsAct, *loadFileAct, *recAct, *textAlignAct, *textIncAct, *textDecAct, *scopeAct, *infoAct, *helpAct, *prefsAct, *focusEditorAct, *focusLogsAct, *focusContextAct, *focusCuesAct, *focusPreferencesAct, *focusHelpListingAct, *focusHelpDetailsAct, *focusErrorsAct, *showLineNumbersAct, *showAutoCompletionAct, *showContextAct, *audioSafeAct, *audioTimingGuaranteesAct, *enableExternalSynthsAct, *mixerInvertStereoAct, *mixerForceMonoAct, *midiEnabledAct, *enableOSCServerAct, *allowRemoteOSCAct, *showLogAct, *showCuesAct, *logAutoScrollAct, *logCuesAct, *logSynthsAct, *clearOutputOnRunAct, *autoIndentOnRunAct, *showButtonsAct, *showTabsAct, *fullScreenAct, *lightThemeAct, *darkThemeAct, *proLightThemeAct, *proDarkThemeAct, *highContrastThemeAct, *showScopeLabelsAct;
+        QShortcut *runSc, *stopSc, *saveAsSc, *loadFileSc, *recSc, *textAlignSc, *textIncSc, *textDecSc, *scopeSc, *infoSc, *helpSc, *prefsSc, *focusEditorSc, *focusLogsSc, *focusContextSc, *focusCuesSc, *focusPreferencesSc, *focusHelpListingSc, *focusHelpDetailsSc, *focusErrorsSc;
 
         SettingsWidget *settingsWidget;
 

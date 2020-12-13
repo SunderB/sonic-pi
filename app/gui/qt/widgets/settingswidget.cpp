@@ -1,4 +1,5 @@
 #include "settingswidget.h"
+#include "../utils/lang_list.h"
 
 #include <QSettings>
 #include <QVBoxLayout>
@@ -20,9 +21,12 @@
 /**
  * Default Constructor
  */
-SettingsWidget::SettingsWidget( int port, SonicPiSettings *piSettings,  QWidget *parent) {
+SettingsWidget::SettingsWidget(int port, bool i18n, SonicPiSettings *piSettings, QWidget *parent) {
     this->piSettings = piSettings;
+    this->i18n = i18n;
     server_osc_cues_port = port;
+    defineLocaleLists();
+
     prefTabs = new QTabWidget();
 
     QGridLayout *grid = new QGridLayout;
@@ -83,14 +87,14 @@ QSize SettingsWidget::sizeHint() const
  */
 QGroupBox* SettingsWidget::createAudioPrefsTab() {
 
-    QGroupBox *volBox = new QGroupBox(tr("Main Volume"));
+    volBox = new QGroupBox(tr("Main Volume"));
     volBox->setToolTip(tr("Use this slider to change the system volume."));
     QHBoxLayout *vol_box = new QHBoxLayout;
     system_vol_slider = new QSlider(this);
     vol_box->addWidget(system_vol_slider);
     volBox->setLayout(vol_box);
 
-    QGroupBox *advancedAudioBox = new QGroupBox(tr("Audio Output"));
+    advancedAudioBox = new QGroupBox(tr("Audio Output"));
     advancedAudioBox->setToolTip(tr("Advanced audio settings for working with\nexternal PA systems when performing with Sonic Pi."));
     mixer_invert_stereo = new QCheckBox(tr("Invert stereo"));
     mixer_invert_stereo->setToolTip(tr("Toggle stereo inversion.\nIf enabled, audio sent to the left speaker will\nbe routed to the right speaker and vice versa."));
@@ -104,7 +108,7 @@ QGroupBox* SettingsWidget::createAudioPrefsTab() {
     advancedAudioBox->setLayout(advanced_audio_box_layout);
 
 
-    QGroupBox *synths_box = new QGroupBox(tr("Synths and FX"));
+    synths_box = new QGroupBox(tr("Synths and FX"));
     synths_box->setToolTip(tr("Modify behaviour of synths and FX"));
 
     check_args = new QCheckBox(tr("Safe mode"));
@@ -141,7 +145,7 @@ QGroupBox* SettingsWidget::createIoPrefsTab() {
     QGroupBox *network_box = new QGroupBox(tr("Networked OSC"));
     network_box->setToolTip(tr("Sonic Pi can send and receive Open Sound Control messages\nto and from other programs or computers\n via the currently connected network."));
 
-    QLabel *network_ip_label = new QLabel();
+    network_ip_label = new QLabel();
     QString ip_address_trans = tr("Local IP address");
     QString port_num_trans = tr("Incoming OSC port");
     QString ip_address = "";
@@ -180,16 +184,16 @@ QGroupBox* SettingsWidget::createIoPrefsTab() {
     network_box_layout->addWidget(network_ip_label);
     network_box->setLayout(network_box_layout);
 
-    QGroupBox *midi_config_box = new QGroupBox(tr("MIDI Configuration"));
+    midi_config_box = new QGroupBox(tr("MIDI Configuration"));
     midi_config_box->setToolTip(tr("Configure MIDI behaviour"));
 
-    QGroupBox *midi_ports_box = new QGroupBox(tr("MIDI Ports"));
+    midi_ports_box = new QGroupBox(tr("MIDI Ports"));
     midi_ports_box->setToolTip(tr("List all connected MIDI Ports"));
 
     midi_enable_check = new QCheckBox(tr("Enable incoming MIDI cues"));
     midi_enable_check->setToolTip(tr("Enable or disable automatic conversion of incoming MIDI messages to cue events"));
 
-    QPushButton *midi_reset_button = new QPushButton(tr("Reset MIDI"));
+    midi_reset_button = new QPushButton(tr("Reset MIDI"));
     midi_reset_button->setFlat(true);
     midi_reset_button->setToolTip(tr("Reset MIDI subsystems \n(Required to detect device changes on macOS)" ));
 
@@ -216,7 +220,7 @@ QGroupBox* SettingsWidget::createIoPrefsTab() {
     midi_default_channel_combo->setMinimumContentsLength(2);
     midi_default_channel_combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength) ;
 
-    QLabel *midi_default_channel_label = new QLabel;
+    midi_default_channel_label = new QLabel;
     midi_default_channel_label->setText(tr("Default MIDI channel"));
     midi_default_channel_label->setToolTip(tr("Default MIDI Channel to send messages to (* means all)"));
 
@@ -269,11 +273,14 @@ QGroupBox* SettingsWidget::createIoPrefsTab() {
  */
 QGroupBox* SettingsWidget::createEditorPrefsTab() {
     QGroupBox *editor_box = new QGroupBox();
-    QGroupBox *editor_display_box = new QGroupBox(tr("Show and Hide"));
+
+    editor_display_box = new QGroupBox(tr("Show and Hide"));
     editor_display_box->setToolTip(tr("Configure editor display options."));
-    QGroupBox *editor_look_feel_box = new QGroupBox(tr("Look and Feel"));
+
+    editor_look_feel_box = new QGroupBox(tr("Look and Feel"));
     editor_look_feel_box->setToolTip(tr("Configure editor look and feel."));
-    QGroupBox *automation_box = new QGroupBox(tr("Automation / Misc"));
+
+    automation_box = new QGroupBox(tr("Automation / Misc"));
     automation_box->setToolTip(tr("Configure automation and other features."));
 
     auto_indent_on_run = new QCheckBox(tr("Auto-align"));
@@ -343,7 +350,7 @@ QGroupBox* SettingsWidget::createEditorPrefsTab() {
 
     automation_box->setLayout(automation_box_layout);
 
-    QGroupBox *debug_box = new QGroupBox(tr("Logging"));
+    debug_box = new QGroupBox(tr("Logging"));
     debug_box->setToolTip(tr("Configure debug behaviour"));
 
     log_synths = new QCheckBox(tr("Log synths"));
@@ -366,16 +373,16 @@ QGroupBox* SettingsWidget::createEditorPrefsTab() {
     debug_box->setLayout(debug_box_layout);
 
 
-    QGroupBox *language_box = new QGroupBox(tr("Language"));
+    language_box = new QGroupBox(tr("Language"));
     language_box->setToolTip(tr("Configure language settings"));
 
     language_combo = new QComboBox();
-    add_locale_combo_box_entries(language_combo);
+    add_language_combo_box_entries(language_combo);
     language_combo->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
     language_combo->setMinimumContentsLength(2);
     language_combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
-    QLabel *language_option_label = new QLabel;
+    language_option_label = new QLabel;
     language_option_label->setText(tr("UI & Tutorial Language (Requires a restart to take effect)"));
     language_option_label->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
 
@@ -399,13 +406,13 @@ QGroupBox* SettingsWidget::createEditorPrefsTab() {
  * Create Visualization Preferences Tab of Settings Widget
  */
 QGroupBox* SettingsWidget::createVisualizationPrefsTab() {
-    QGroupBox *viz_box = new QGroupBox();
+    viz_box = new QGroupBox();
     viz_box->setToolTip(tr("Settings useful for performing with Sonic Pi"));
 
     QGridLayout* viz_tab_layout = new QGridLayout();
 
-    QGroupBox *scope_box = new QGroupBox(tr("Show and Hide Scope"));
-    QGroupBox *scope_box_kinds = new QGroupBox(tr("Scope Kinds"));
+    scope_box = new QGroupBox(tr("Show and Hide Scope"));
+    scope_box_kinds = new QGroupBox(tr("Scope Kinds"));
 
     //QVBoxLayout *scope_box_kinds_layout = new QVBoxLayout;
     scope_box_kinds_layout = new QVBoxLayout;
@@ -426,7 +433,7 @@ QGroupBox* SettingsWidget::createVisualizationPrefsTab() {
     viz_tab_layout->addWidget(scope_box, 0, 0);
     viz_tab_layout->addWidget(scope_box_kinds, 1, 0);
 
-    QGroupBox *transparency_box = new QGroupBox(tr("Transparency"));
+    transparency_box = new QGroupBox(tr("Transparency"));
     QGridLayout *transparency_box_layout = new QGridLayout;
     gui_transparency_slider = new QSlider(this);
     transparency_box_layout->addWidget(gui_transparency_slider);
@@ -447,7 +454,7 @@ QGroupBox* SettingsWidget::createVisualizationPrefsTab() {
  * create Update Preferences Tab of Settings Widget
  */
 QGroupBox* SettingsWidget::createUpdatePrefsTab() {
-    QGroupBox *update_box = new QGroupBox(tr("Updates"));
+    update_box = new QGroupBox(tr("Updates"));
     QSizePolicy updatesPrefSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     check_updates = new QCheckBox(tr("Check for updates"));
     update_box->setSizePolicy(updatesPrefSizePolicy);
@@ -459,7 +466,7 @@ QGroupBox* SettingsWidget::createUpdatePrefsTab() {
     visit_sonic_pi_net->setToolTip(tr("Visit http://sonic-pi.net to download new version"));
     visit_sonic_pi_net->setVisible(false);
 
-    QGroupBox *update_info_box = new QGroupBox(tr("Update Info"));
+    update_info_box = new QGroupBox(tr("Update Info"));
     update_info_box->setMaximumWidth(350);
     QVBoxLayout *update_info_box_layout = new QVBoxLayout;
     update_info = new QLabel(tr("Sonic Pi update info"));
@@ -523,6 +530,10 @@ void SettingsWidget::toggleScope( QWidget* qw ) {
   emit scopeChanged(name);
 }
 
+void SettingsWidget::updateUILanguage(int index) {
+  QString lang = language_combo_index_to_language_str(index);
+  emit uiLanguageChanged(lang);
+}
 
 void SettingsWidget::update_mixer_invert_stereo() {
     emit mixerSettingsChanged();
@@ -662,6 +673,7 @@ void SettingsWidget::updateVersionInfo( QString info_string, QString visit, bool
 
 void SettingsWidget::updateSettings() {
     std::cout << "[GUI] - Update Settings" << std::endl;
+    piSettings->language = language_combo_index_to_language_str(language_combo->currentIndex());
     piSettings->mixer_invert_stereo = mixer_invert_stereo->isChecked();
     piSettings->mixer_force_mono = mixer_force_mono->isChecked();
     piSettings->check_args = check_args->isChecked();
@@ -702,6 +714,7 @@ void SettingsWidget::updateSettings() {
 }
 
 void SettingsWidget::settingsChanged() {
+    language_combo->setCurrentIndex(localeIndex[piSettings->language]);
 
     mixer_invert_stereo->setChecked(piSettings->mixer_invert_stereo);
     mixer_force_mono->setChecked(piSettings->mixer_force_mono);
@@ -745,6 +758,8 @@ void SettingsWidget::settingsChanged() {
 }
 
 void SettingsWidget::connectAll() {
+    connect(language_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSettings()));
+    connect(language_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateUILanguage(int)));
     connect(mixer_invert_stereo, SIGNAL(clicked()), this, SLOT(updateSettings()));
     connect(mixer_force_mono, SIGNAL(clicked()), this, SLOT(updateSettings()));
     connect(check_args, SIGNAL(clicked()), this, SLOT(updateSettings()));
@@ -818,4 +833,201 @@ void SettingsWidget::connectAll() {
     connect(log_synths, SIGNAL(clicked()), this, SLOT(logSynths()));
     connect(clear_output_on_run, SIGNAL(clicked()), this, SLOT(clearOutputOnRun()));
     connect(auto_indent_on_run, SIGNAL(clicked()), this, SLOT(autoIndentOnRun()));
+}
+
+void SettingsWidget::add_language_combo_box_entries(QComboBox* combo) {
+  // Add language combo entries
+  std::cout << "[Debug] Adding language combo box entries..." << std::endl;
+  std::cout << (std::to_string(static_cast<int>(availableLocales.size()))) << std::endl;
+
+  for (auto const &language_entry : availableLocales) {
+    std::cout << "[Debug] Adding language " << language_entry.second.toUtf8().data() << " to the combo box" << std::endl;
+    if (language_entry.second != "system_locale") {
+      // Add the language's name to the combo box
+      combo->addItem(localeNames[language_entry.second]);
+    } else {
+      combo->addItem(tr("Use system language"));
+    }
+  }
+}
+
+QString SettingsWidget::language_combo_index_to_language_str(int index) {
+  return availableLocales[index];
+}
+
+
+//
+//
+//
+//
+//
+
+
+
+void SettingsWidget::updateTranslatedUIText() {
+  /**
+  * IO Tab
+  */
+
+  network_box->setTitle(tr("Networked OSC"));
+  network_box->setToolTip(tr("Sonic Pi can send and receive Open Sound Control messages\nto and from other programs or computers\n via the currently connected network."));
+
+  // Network IP label
+  QString ip_address_trans = tr("Local IP address");
+  QString port_num_trans = tr("Incoming OSC port");
+  QString ip_address = "";
+  QString all_ip_addresses  = "";
+
+  QList<QHostAddress> list = QNetworkInterface::allAddresses();
+
+  for(int nIter=0; nIter<list.count(); nIter++)
+  {
+      if(!list[nIter].isLoopback()) {
+          if (list[nIter].protocol() == QAbstractSocket::IPv4Protocol ) {
+              if (ip_address.isEmpty()) {
+                  ip_address = list[nIter].toString();
+              }
+              all_ip_addresses = all_ip_addresses + list[nIter].toString() + "\n";
+          }
+      }
+  }
+
+  if (ip_address.isEmpty()) {
+      ip_address = tr("Unavailable");
+  }
+
+  network_ip_label->setText(ip_address_trans + ": " + ip_address + "\n" + port_num_trans + + ": " + QString::number(server_osc_cues_port));
+  network_ip_label->setToolTip(all_ip_addresses);
+  // ----------
+
+  osc_public_check->setText(tr("Allow OSC from other computers"));
+  osc_public_check->setToolTip(tr("When checked, Sonic Pi will let you send and receive OSC messages to and from remote machines.\n When unchecked, only sending and receiving from the local machine will be enabled."));
+
+  osc_server_enabled_check->setText(tr("Allow incoming OSC"));
+  osc_server_enabled_check->setToolTip(tr("When checked, Sonic Pi will listen for OSC messages.\n When unchecked no OSC messages will be received."));
+
+  midi_config_box->setTitle(tr("MIDI Configuration"));
+  midi_config_box->setToolTip(tr("Configure MIDI behaviour"));
+
+  midi_ports_box->setTitle(tr("MIDI Ports"));
+  midi_ports_box->setToolTip(tr("List all connected MIDI Ports"));
+
+  midi_enable_check->setText(tr("Enable incoming MIDI cues"));
+  midi_enable_check->setToolTip(tr("Enable or disable automatic conversion of incoming MIDI messages to cue events"));
+
+  midi_reset_button->setText(tr("Reset MIDI"));
+  midi_reset_button->setToolTip(tr("Reset MIDI subsystems \n(Required to detect device changes on macOS)" ));
+
+  midi_default_channel_label->setText(tr("Default MIDI channel"));
+  midi_default_channel_label->setToolTip(tr("Default MIDI Channel to send messages to (* means all)"));
+
+  midi_default_channel_combo->setToolTip(tr("Default MIDI Channel to send messages to  (* means all)"));
+
+  midi_in_ports_label->setText(tr("No connected input devices"));
+  midi_out_ports_label->setText(tr("No connected output devices"));
+  midi_in_ports_label->setToolTip(tr("MIDI input devices send MIDI messages directly to\nSonic Pi and are received as cue events\n(similar to incoming OSC messages and internal cues)"));
+  midi_out_ports_label->setToolTip(tr("MIDI output devices receive MIDI messages directly from\nSonic Pi which can be sent via the midi_* fns"));
+
+
+  /**
+  * Editor Tab
+  */
+
+  editor_display_box->setTitle(tr("Show and Hide"));
+  editor_display_box->setToolTip(tr("Configure editor display options."));
+
+  editor_look_feel_box->setTitle(tr("Look and Feel"));
+  editor_look_feel_box->setToolTip(tr("Configure editor look and feel."));
+
+  automation_box->setTitle(tr("Automation / Misc"));
+  automation_box->setToolTip(tr("Configure automation and other features."));
+
+  auto_indent_on_run->setText(tr("Auto-align"));
+  auto_indent_on_run->setToolTip(tr("Automatically align code on Run"));
+
+  show_line_numbers->setText(tr("Show line numbers"));
+  show_line_numbers->setToolTip(tr("Toggle line number visibility."));
+
+  show_autocompletion->setText(tr("Show code completion"));
+  show_autocompletion->setToolTip(tr("When enabled, Sonic Pi's editor will attempt to autocomplete your code with suggestions. When disabled, these suggestions will not be visible."));
+
+  show_context->setText(tr("Show code context"));
+  show_context->setToolTip(tr("When enabled, Sonic Pi's editor will show a pane which will display context-specific information for the code such as the current line and position of the cursor."));
+
+  show_log->setText(tr("Show log"));
+  show_log->setToolTip(tooltipStrShiftMeta('L', tr("Toggle visibility of the log.")));
+
+  show_cues->setText(tr("Show cue log"));
+  show_cues->setToolTip(tooltipStrShiftMeta('C', tr("Toggle visibility of cue log which displays internal cues & incoming OSC/MIDI messages.")));
+
+  show_buttons->setText(tr("Show buttons"));
+  show_buttons->setToolTip(tooltipStrShiftMeta('B', tr("Toggle visibility of the control buttons.")));
+
+  show_tabs->setText(tr("Show tabs"));
+  show_tabs->setToolTip(tr("Toggle visibility of the buffer selection tabs."));
+
+  full_screen->setText(tr("Full screen"));
+  full_screen->setToolTip(tooltipStrShiftMeta('F', tr("Toggle full screen mode.")));
+
+  goto_buffer_shortcuts->setText(tr("Enable buffer shortcuts"));
+  goto_buffer_shortcuts->setToolTip(tr("Use C-M-0 .. C-M-9 to go to buffer directly"));
+
+  lightModeCheck->setText(tr("Light"));
+  darkModeCheck->setText(tr("Dark"));
+  lightProModeCheck->setText(tr("Pro Light"));
+  darkProModeCheck->setText(tr("Pro Dark"));
+  highContrastModeCheck->setText(tr("High Contrast"));
+
+  debug_box->setTitle(tr("Logging"));
+  debug_box->setToolTip(tr("Configure debug behaviour"));
+
+  print_output->setText(tr("Log synths"));
+  print_output->setToolTip(tr("Toggle log messages.\nIf disabled, activity such as synth and sample\ntriggering will not be printed to the log by default."));
+
+  clear_output_on_run->setText(tr("Clear log on run"));
+  clear_output_on_run->setToolTip(tr("Toggle log clearing on run.\nIf enabled, the log is cleared each\ntime the run button is pressed."));
+
+  log_cues->setText(tr("Log cues"));
+  log_cues->setToolTip(tr("Enable or disable logging of cues.\nIf disabled, cues will still trigger.\nHowever, they will not be visible in the logs."));
+
+  log_auto_scroll->setText(tr("Auto-scroll log"));
+  log_auto_scroll->setToolTip(tr("Toggle log auto scrolling.\nIf enabled the log is scrolled to the bottom after every new message is displayed."));
+
+  language_box->setTitle(tr("Language"));
+  language_box->setToolTip(tr("Configure language settings"));
+
+  language_combo->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
+
+  language_option_label->setText(tr("UI & Tutorial Language"));
+  language_option_label->setToolTip(tr("Change the language of the UI & Tutorial"));
+
+  /**
+  * Visuals Tab
+  */
+  viz_box->setToolTip(tr("Settings useful for performing with Sonic Pi"));
+
+  scope_box->setTitle(tr("Show and Hide Scope"));
+  scope_box_kinds->setTitle(tr("Scope Kinds"));
+
+  show_scopes->setText(tr("Show Scopes"));
+  show_scopes->setToolTip(tr("Toggle the visibility of the audio oscilloscopes."));
+  show_scope_labels->setText(tr("Show Labels"));
+  show_scope_labels->setToolTip(tr("Toggle the visibility of the labels for the audio oscilloscopes"));
+  scope_box_kinds->setToolTip(tr("The audio oscilloscope comes in several flavours which may\nbe viewed independently or all together:\n\nLissajous - illustrates the phase relationship between the left and right channels\nMirror Stereo - simple left/right composite wave, with left on top, right on bottom\nMono - shows a combined view of the left and right channels (using RMS)\nSpectrum - shows the sound frequencies as a spectrum, from low to high frequencies\nStereo - shows two independent scopes for left and right channels"));
+
+  transparency_box->setTitle(tr("Transparency"));
+
+  /**
+  * Preferences Tab
+  */
+  update_box->setTitle(tr("Updates"));
+  check_updates->setText(tr("Check for updates"));
+  check_updates->setToolTip(tr("Toggle automatic update checking.\nThis check involves sending anonymous information about your platform and version."));
+  check_updates_now->setText(tr("Check now"));
+  check_updates_now->setToolTip(tr("Force a check for updates now.\nThis check involves sending anonymous information about your platform and version."));
+  visit_sonic_pi_net->setText(tr("Get update"));
+  visit_sonic_pi_net->setToolTip(tr("Visit http://sonic-pi.net to download new version"));
+
+  update_info_box->setTitle(tr("Update Info"));
+  update_info->setText(tr("Sonic Pi update info"));
 }
