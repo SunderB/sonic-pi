@@ -39,23 +39,33 @@ FileUtils::mkdir "#{qt_gui_path}/info/"
 FileUtils::rm_rf "#{qt_gui_path}/book/"
 FileUtils::mkdir "#{qt_gui_path}/book/"
 
+# List of all languages with GUI translation files
+# Commented out languages currently have no translated strings
 lang_names = Hash[
+  "bg" => "български", # Bulgarian
+  #"bn" => "বাংলা", # Bengali/Bangla
   "bs" => "Bosanski/босански", # Bosnian
   "ca" => "Català", # Catalan
+  #"ca@valencia" => "Valencià", # Valencian
   "cs" => "Čeština", # Czech
   "da" => "Dansk", # Danish
   "de" => "Deutsch", # German
   "el" => "ελληνικά", # Greek
-  "en-US" => "English (USA)", # English (USA)
+  #"en-AU" => "English (Austrailian)", # English (Australian)
+  "en-GB" => "English (UK)", # English (UK) - default language
+  "en-US" => "English (North American)", # English (US)
+  #"eo" => "Esperanto", # Esperanto
   "es" => "Español", # Spanish
   "et" => "Eesti keel", # Estonian
   "fa" => "فارسی", # Persian
   "fi" => "Suomi", # Finnish
   "fr" => "Français", # French
+  "ga" => "Gaeilge", # Irish
   "gl" => "Galego", # Galician
   "he" => "עברית", # Hebrew
   "hi" => "हिन्दी", # Hindi
   "hu" => "Magyar", # Hungarian
+  "hy" => "Հայերեն", # Armenian
   "id" => "Bahasa Indonesia", # Indonesian
   "is" => "Íslenska", # Icelandic
   "it" => "Italiano", # Italian
@@ -69,9 +79,12 @@ lang_names = Hash[
   "pt-BR" => "Português do Brasil", # Brazilian Portuguese
   "ro" => "Română", # Romanian
   "ru" => "Pусский", # Russian
+  "si" => "සිංහල", # Sinhala/Sinhalese
   "sk" => "Slovenčina/Slovenský Jazyk", # Slovak/Slovakian
   "sl" => "Slovenščina/Slovenski Jezik", # Slovenian
   "sv" => "Svenska", # Swedish
+  "sw" => "Kiswahili", # Swahili
+  "ti" => "ไทย", # Thai
   "tr" => "Türkçe", # Turkish
   "ug" => "ئۇيغۇر تىلى", # Uyghur
   "uk" => "Українська", # Ukranian
@@ -249,23 +262,16 @@ ruby_html_map = {
 #  "loop" => "Loop forever",
 }
 
-languages =
-  Dir[File.expand_path("../lang/sonic-pi-tutorial-*.po", tutorial_path)].
-  map { |p| File.basename(p).gsub(/sonic-pi-tutorial-(.*?).po/, '\1') }
-# docs << "\n  QString systemLocale = QLocale::system().name();\n\n" unless languages.empty?
-
-# Add English to the languages, and sort languages alphabetically
-languages = languages.push("en-US")
-languages = languages.sort_by {|l| l.downcase}
-
 # Make a function to define the locale list map -----
+ui_languages = lang_names.keys
+ui_languages = ui_languages.sort_by {|l| l.downcase}
 locale_arrays = []
-locale_arrays << "void MainWindow::defineLocaleLists() {\n"
+locale_arrays << "void SettingsWidget::defineLocaleLists() {\n"
 locale_arrays << "availableLocales = {\n"
 # Add each language
 locale_arrays << "{0, \"system_locale\"}"
 i = 1
-languages.each do |lang|
+ui_languages.each do |lang|
   locale_arrays << ",\n"
   locale_arrays << "{#{i.to_s}, \"#{lang}\"}"
   i += 1
@@ -278,7 +284,7 @@ locale_arrays << "localeIndex = {\n"
 # Add each language
 locale_arrays << "{\"system_locale\", 0}"
 i = 1
-languages.each do |lang|
+ui_languages.each do |lang|
   locale_arrays << ",\n"
   locale_arrays << "{\"#{lang}\", #{i.to_s}}"
   i += 1
@@ -290,7 +296,7 @@ locale_arrays << "\n};\n"
 locale_arrays << "localeNames = {\n"
 # Add each language
 locale_arrays << "{\"system_locale\", \"\"}"
-languages.each do |lang|
+ui_languages.each do |lang|
   locale_arrays << ",\n"
   locale_arrays << "{\"#{lang}\", \"#{lang_names[lang]}\"}"
 end
@@ -299,16 +305,38 @@ locale_arrays << "\n};\n"
 
 # End the function
 locale_arrays << "};\n"
+
+content = File.readlines("#{qt_gui_path}/utils/lang_list.tmpl")
+lang_names_generated = content.take_while { |line| !line.start_with?("// AUTO-GENERATED")}
+lang_names_generated << "// AUTO-GENERATED HEADER FILE\n"
+lang_names_generated << "// Do not add any code to this file\n"
+lang_names_generated << "// as it will be removed/overwritten\n"
+lang_names_generated << "\n"
+lang_names_generated << "#ifndef LANG_LIST_H\n"
+lang_names_generated << "#define LANG_LIST_H\n"
+lang_names_generated << "#include <map>\n"
+lang_names_generated << locale_arrays.join()
+lang_names_generated << "#endif\n"
+
+File.open("#{qt_gui_path}/utils/lang_list.h", 'w') do |f|
+  f << lang_names_generated.join()
+end
+
 # -----
 
+tutorial_languages =
+  Dir[File.expand_path("../lang/sonic-pi-tutorial-*.po", tutorial_path)].
+  map { |p| File.basename(p).gsub(/sonic-pi-tutorial-(.*?).po/, '\1') }
+# docs << "\n  QString systemLocale = QLocale::system().name();\n\n" unless tutorial_languages.empty?
+
 # Remove English for now
-languages.delete("en-US")
+#tutorial_languages.delete("en")
 
 # this will sort locale code names by reverse length
 # to make sure that a more specific locale is handled
 # before the generic language code,
 # e.g., "de_CH" should be handled before "de"
-languages =
+tutorial_languages =
   Dir[File.expand_path("../lang/sonic-pi-tutorial-*.po", tutorial_path)].
   map { |p| File.basename(p).gsub(/sonic-pi-tutorial-(.*?).po/, '\1') }.
   sort_by {|n| -n.length}
@@ -316,16 +344,16 @@ languages =
 docs << "\n  QString systemLocale = QLocale::system().uiLanguages()[0];\n\n" unless languages.empty?
 
 # first, try to match all non-default languages (those that aren't "en")
-languages.each do |lang|
+tutorial_languages.each do |lang|
   docs << "if (locale.startsWith(\"#{lang}\")) {\n"
   make_tutorial.call(lang)
   docs << "} else "
 end
 
 # finally, add the default language ("en")
-docs << "{\n" unless (languages.empty?)
+docs << "{\n" unless (tutorial_languages.empty?)
 make_tutorial.call("en")
-docs << "}\n" unless (languages.empty?)
+docs << "}\n" unless (tutorial_languages.empty?)
 
 make_tab.call("examples", example_html_map, false, false, false, true)
 make_tab.call("synths", SonicPi::Synths::SynthInfo.synth_doc_html_map, :titleize, true, true, true)
@@ -365,21 +393,19 @@ end
 if options[:output_name] then
    cpp = options[:output_name]
 else
-   cpp = "#{qt_gui_path}/ruby_help.h"
+   cpp = "#{qt_gui_path}/utils/ruby_help.h"
 end
 
-content = File.readlines(cpp)
+content = File.readlines("#{qt_gui_path}/utils/ruby_help.tmpl")
 new_content = content.take_while { |line| !line.start_with?("// AUTO-GENERATED-DOCS")}
 new_content << "// AUTO-GENERATED-DOCS\n"
 new_content << "// Do not manually add any code below this comment\n"
 new_content << "// otherwise it may be removed\n"
 new_content << "\n"
-new_content << "#include <map>\n"
-new_content << "\n"
 #new_content << locale_array_defs
 #new_content << "\n"
 #new_content << "\nvoid MainWindow::defineLocaleLists() {\n"
-new_content << locale_arrays
+#new_content << locale_arrays
 #new_content << "};"
 new_content << "\n"
 new_content << "void MainWindow::initDocsWindow(QString locale) {\n"
