@@ -11,6 +11,8 @@
 // notice is included.
 //++
 
+#include <iostream>
+
 #include <QApplication>
 #include <QSplashScreen>
 #include <QPixmap>
@@ -50,39 +52,63 @@ int main(int argc, char *argv[])
 
   qRegisterMetaType<SonicPiLog::MultiMessage>("SonicPiLog::MultiMessage");
 
-  // Locale/translations ----------
-  QString systemLocale = QLocale::system().name();
+  // language/translations ----------
+  //QString selected_language = "";
 
+  QLocale locale;
+  QStringList preferred_languages = locale.uiLanguages();
+  //QString systemLocale = QLocale::system().name();
 
   QTranslator qtTranslator;
   QTranslator translator;
 
   bool i18n = false;
 
-  // Get the specified locale from the settings
-  QSettings settings("sonic-pi.net", "gui-settings");
-  QString locale = settings.value("prefs/locale").toString();
+  // Get the specified language from the settings
+  QSettings settings(QSettings::IniFormat, QSettings::UserScope, "sonic-pi.net", "gui-settings");
+  QString language = settings.value("prefs/language").toString();
+
   std::cout << "[Debug] Settings file name:" << std::endl;
   std::cout << (settings.fileName().toUtf8().constData()) << std::endl;
-  std::cout << "Locale setting: " << std::endl;
-  std::cout << (locale.toUtf8().constData()) << std::endl;
+  std::cout << "Language setting: " << std::endl;
+  std::cout << (language.toUtf8().constData()) << std::endl;
 
-  // If a locale is specified...
-  if (locale != "system_locale") {
-    // ...try using the specified locale
-    i18n = translator.load("sonic-pi_" + locale, ":/lang/") || locale.startsWith("en") || locale == "C";
+
+
+  // If a language is specified...
+  if (language != "system_locale") {
+    // ...try using the specified language
+    i18n = translator.load("sonic-pi_" + language, ":/lang/") || language.startsWith("en") || language == "C";
   }
 
-  // If the specified locale isn't available, or if the setting is set to system_locale...
-  if (!i18n || locale == "system_locale") {
-    // ...try using the system locale
-    locale = systemLocale;
-    i18n = translator.load("sonic-pi_" + locale, ":/lang/") || locale.startsWith("en") || locale == "C";
+  // If the specified language isn't available, or if the setting is set to system_locale...
+  if (!i18n || language == "system_locale") {
+    // ...run through the list of preferred languages
+    std::cout << "Looping through preferred ui languages" << std::endl;
+
+    for (int i = 0; i < preferred_languages.length(); i += 1) {
+      i18n = translator.load("sonic-pi_" + preferred_languages[i], ":/lang/") || preferred_languages[i].startsWith("en") || preferred_languages[i] == "C";
+      if (i18n) {
+        std::cout << preferred_languages[i].toUtf8().constData() << ": Found language translation" << std::endl;
+        language = preferred_languages[i];
+        break;
+      } else {
+        std::cout << preferred_languages[i].toUtf8().constData() << ": Language translation not available" << std::endl;
+      }
+    }
   }
+
+  // Fallback to english
+  if (!i18n) {
+    std::cout << "No preferred language translation found, falling back to English" << std::endl;
+    language = "en";
+  }
+
+  std::cout << "Using language: " << language.toUtf8().constData() << std::endl;
 
   app.installTranslator(&translator);
 
-  qtTranslator.load("qt_" + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  qtTranslator.load("qt_" + language, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
   app.installTranslator(&qtTranslator);
   // ----------
 
@@ -102,7 +128,7 @@ int main(int argc, char *argv[])
   splash->show();
   splash->repaint();
   app.processEvents();
-  MainWindow mainWin(app, i18n, splash);
+  MainWindow mainWin(app, language, i18n, splash);
 
   return app.exec();
 #elif _WIN32
@@ -136,7 +162,7 @@ int main(int argc, char *argv[])
   splash->show();
   splash->repaint();
   app.processEvents();
-  MainWindow mainWin(app, i18n, splash);
+  MainWindow mainWin(app, language, i18n, splash);
 
   // Fix for full screen mode. See: https://doc.qt.io/qt-5/windows-issues.html#fullscreen-opengl-based-windows
   QWindowsWindowFunctions::setHasBorderInFullScreen(mainWin.windowHandle(), true);
@@ -166,7 +192,7 @@ int main(int argc, char *argv[])
   splashWindow->show();
   app.processEvents();
 
-  MainWindow mainWin(app, locale, i18n, splashWindow);
+  MainWindow mainWin(app, language, i18n, splashWindow);
   return app.exec();
 
 #endif
