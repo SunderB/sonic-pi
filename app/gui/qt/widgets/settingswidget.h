@@ -35,6 +35,8 @@ public:
     void defineLocaleLists();
     QString language_combo_index_to_language_str(int index);
 
+    void updateTranslatedUIText();
+
 private slots:
     void updateUILanguage(int index);
     void update_mixer_invert_stereo();
@@ -153,7 +155,7 @@ private:
     QCheckBox *show_line_numbers;
     QCheckBox *auto_indent_on_run;
     QCheckBox *full_screen;
-    QCheckBox* goto_buffer_shortcuts;
+    QCheckBox *goto_buffer_shortcuts;
     QCheckBox *show_log;
     QCheckBox *show_cues;
     QCheckBox *show_buttons;

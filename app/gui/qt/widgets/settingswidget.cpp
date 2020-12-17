@@ -142,7 +142,7 @@ QGroupBox* SettingsWidget::createAudioPrefsTab() {
 QGroupBox* SettingsWidget::createIoPrefsTab() {
     QGroupBox *ioTab = new QGroupBox();
 
-    QGroupBox *network_box = new QGroupBox(tr("Networked OSC"));
+    network_box = new QGroupBox(tr("Networked OSC"));
     network_box->setToolTip(tr("Sonic Pi can send and receive Open Sound Control messages\nto and from other programs or computers\n via the currently connected network."));
 
     network_ip_label = new QLabel();
@@ -378,13 +378,13 @@ QGroupBox* SettingsWidget::createEditorPrefsTab() {
 
     language_combo = new QComboBox();
     add_language_combo_box_entries(language_combo);
-    language_combo->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
+    language_combo->setToolTip(tr("Change the language of the UI & Tutorial"));
     language_combo->setMinimumContentsLength(2);
     language_combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
     language_option_label = new QLabel;
-    language_option_label->setText(tr("UI & Tutorial Language (Requires a restart to take effect)"));
-    language_option_label->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
+    language_option_label->setText(tr("UI & Tutorial Language"));
+    language_option_label->setToolTip(tr("Change the language of the UI & Tutorial"));
 
     QVBoxLayout *language_box_layout = new QVBoxLayout;
     language_box_layout->addWidget(language_combo);
@@ -865,10 +865,42 @@ QString SettingsWidget::language_combo_index_to_language_str(int index) {
 
 
 void SettingsWidget::updateTranslatedUIText() {
+  prefTabs->setTabText(0, tr("Audio"));
+  prefTabs->setTabText(1, tr("IO"));
+  prefTabs->setTabText(2, tr("Editor"));
+  prefTabs->setTabText(3, tr("Visuals"));
+  prefTabs->setTabText(4, tr("Updates"));
+
+  /**
+  * Audio Tab
+  */
+  volBox->setTitle(tr("Main Volume"));
+  volBox->setToolTip(tr("Use this slider to change the system volume."));
+
+  advancedAudioBox->setTitle(tr("Audio Output"));
+  advancedAudioBox->setToolTip(tr("Advanced audio settings for working with\nexternal PA systems when performing with Sonic Pi."));
+  mixer_invert_stereo->setText(tr("Invert stereo"));
+  mixer_invert_stereo->setToolTip(tr("Toggle stereo inversion.\nIf enabled, audio sent to the left speaker will\nbe routed to the right speaker and vice versa."));
+  mixer_force_mono->setText(tr("Force mono"));
+  mixer_force_mono->setToolTip(tr("Toggle mono mode.\nIf enabled both right and left audio is mixed and\nthe same signal is sent to both speakers.\nUseful when working with external systems that\ncan only handle mono."));
+
+
+  synths_box->setTitle(tr("Synths and FX"));
+  synths_box->setToolTip(tr("Modify behaviour of synths and FX"));
+
+  check_args->setText(tr("Safe mode"));
+  check_args->setToolTip(tr("Toggle synth argument checking functions.\nIf disabled, certain synth opt values may\ncreate unexpectedly loud or uncomfortable sounds."));
+
+  synth_trigger_timing_guarantees_cb->setText(tr("Enforce timing guarantees"));
+  synth_trigger_timing_guarantees_cb->setToolTip(tr("When enabled, Sonic Pi will refuse\nto trigger synths and FX if\nit is too late to do so\n\nWhen disabled, Sonic Pi will always\nattempt to trigger synths and FX\neven when a little late."));
+
+  enable_external_synths_cb->setText(tr("Enable external synths/FX"));
+  enable_external_synths_cb->setToolTip(tr("When enabled, Sonic Pi will allow\nsynths and FX loaded via load_synthdefs\nto be triggered.\n\nWhen disabled, Sonic Pi will complain\nwhen you attempt to use a synth or FX\nwhich isn't recognised."));
+
+
   /**
   * IO Tab
   */
-
   network_box->setTitle(tr("Networked OSC"));
   network_box->setToolTip(tr("Sonic Pi can send and receive Open Sound Control messages\nto and from other programs or computers\n via the currently connected network."));
 
@@ -996,7 +1028,7 @@ void SettingsWidget::updateTranslatedUIText() {
   language_box->setTitle(tr("Language"));
   language_box->setToolTip(tr("Configure language settings"));
 
-  language_combo->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
+  language_combo->setToolTip(tr("Change the language of the UI & Tutorial"));
 
   language_option_label->setText(tr("UI & Tutorial Language"));
   language_option_label->setToolTip(tr("Change the language of the UI & Tutorial"));

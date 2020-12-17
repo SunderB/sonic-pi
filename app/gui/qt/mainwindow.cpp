@@ -39,6 +39,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QStyle>
+#include <QTranslator>
 
 // QScintilla stuff
 #include <Qsci/qsciapis.h>
@@ -94,9 +95,9 @@ void sleep(int x) { Sleep((x)*1000); }
 
 
 #ifdef Q_OS_MAC
-MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QMainWindow* splash)
+MainWindow::MainWindow(QApplication &app, QMainWindow* splash)
 #else
-MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashScreen* splash)
+MainWindow::MainWindow(QApplication &app, QSplashScreen* splash)
 #endif
 {
     app.installEventFilter(this);
@@ -106,9 +107,7 @@ MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashSc
     printAsciiArtLogo();
 
     this->piSettings = new SonicPiSettings();
-
     this->splash = splash;
-    this->i18n = i18n;
 
     sonicPiOSCServer = NULL;
     startup_error_reported = new QCheckBox;
@@ -132,10 +131,10 @@ MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashSc
     latest_version = "";
     version_num = 0;
     latest_version_num = 0;
-    this->splash = splash;
-    this->i18n = i18n;
     guiID = QUuid::createUuid().toString();
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "sonic-pi.net", "gui-settings");
+
+    this->i18n = initTranslations(settings.value("prefs/language").toString());
 
     readSettings();
     initPaths();
@@ -1955,19 +1954,18 @@ void MainWindow::changeUILanguage(QString lang) {
     piSettings->language = lang;
     std::cout << "Using language: " << lang.toUtf8().constData() << std::endl;
 
-    QTranslator qtTranslator;
-    QTranslator translator;
     QApplication* app = dynamic_cast<QApplication*>(parent());
 
-    i18n = translator.load("sonic-pi_" + lang, ":/lang/") || lang.startsWith("en") || lang == "C";
-    app->installTranslator(&translator);
+    i18n = translator->load("sonic-pi_" + lang, ":/lang/") || lang.startsWith("en") || lang == "C";
+    app->installTranslator(translator);
 
-    qtTranslator.load("qt_" + lang, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app->installTranslator(&qtTranslator);
+    qtTranslator->load("qt_" + lang, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app->installTranslator(qtTranslator);
+
+    ui_language = lang;
 
     updateTranslatedUIText();
     statusBar()->showMessage(tr("Updated UI language"), 5000);
-
     //statusBar()->showMessage(tr("Updated UI language setting, please restart Sonic Pi to apply it"), 2000);
 }
 
@@ -4001,7 +3999,70 @@ void MainWindow::updateTranslatedUIText() {
   // =====
 
   // Update text in other widgets
-  settingsWidget->updateTranslatedUIText()
+  settingsWidget->updateTranslatedUIText();
+}
 
+bool MainWindow::initTranslations(QString lang = "system_locale") {
+  // language/translations ----------
+  //QString selected_language = "";
 
+  QApplication* app = dynamic_cast<QApplication*>(parent());
+
+  translator = new QTranslator();
+  qtTranslator = new QTranslator();
+  QLocale locale;
+  QStringList preferred_languages = locale.uiLanguages();
+  //QString systemLocale = QLocale::system().name();
+  bool i18n = false;
+
+  // Get the specified language from the settings
+  QString language = lang;
+
+  //std::cout << "[Debug] Settings file name:" << std::endl;
+  //std::cout << (settings.fileName().toUtf8().constData()) << std::endl;
+  std::cout << "Language setting: " << std::endl;
+  std::cout << (language.toUtf8().constData()) << std::endl;
+
+  // If a language is specified...
+  if (language != "system_locale") {
+    // ...try using the specified language
+    i18n = translator->load("sonic-pi_" + language, ":/lang/") || language.startsWith("en") || language == "C";
+  }
+
+  // If the specified language isn't available, or if the setting is set to system_locale...
+  if (!i18n || language == "system_locale") {
+    // ...run through the list of preferred languages
+    std::cout << "Looping through preferred ui languages" << std::endl;
+
+    for (int i = 0; i < preferred_languages.length(); i += 1) {
+      i18n = translator->load("sonic-pi_" + preferred_languages[i], ":/lang/") || preferred_languages[i].startsWith("en") || preferred_languages[i] == "C";
+      if (i18n) {
+        std::cout << preferred_languages[i].toUtf8().constData() << ": Found language translation" << std::endl;
+        language = preferred_languages[i];
+        break;
+      } else {
+        std::cout << preferred_languages[i].toUtf8().constData() << ": Language translation not available" << std::endl;
+      }
+    }
+  }
+
+  // Fallback to english
+  if (!i18n) {
+    std::cout << "No preferred language translation found, falling back to English" << std::endl;
+    language = "en";
+  }
+
+  std::cout << "Using language: " << language.toUtf8().constData() << std::endl;
+
+  app->installTranslator(translator);
+
+  qtTranslator->load("qt_" + language, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  app->installTranslator(qtTranslator);
+  // ----------
+
+  app->setApplicationName(QObject::tr("Sonic Pi"));
+
+  ui_language = language;
+
+  return i18n;
 }
