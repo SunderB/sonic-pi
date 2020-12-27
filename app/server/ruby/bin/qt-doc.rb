@@ -30,6 +30,7 @@ require 'active_support/inflector'
 
 include SonicPi::Util
 
+# Clear all the folders
 FileUtils::rm_rf "#{qt_gui_path}/help/"
 FileUtils::mkdir "#{qt_gui_path}/help/"
 
@@ -38,6 +39,9 @@ FileUtils::mkdir "#{qt_gui_path}/info/"
 
 FileUtils::rm_rf "#{qt_gui_path}/book/"
 FileUtils::mkdir "#{qt_gui_path}/book/"
+
+# Copy images for tutorial
+FileUtils::cp_r("#{etc_path}/doc/images", "#{qt_gui_path}/help/")
 
 # List of all languages with GUI translation files
 # Commented out languages currently have no translated strings
@@ -51,9 +55,9 @@ FileUtils::mkdir "#{qt_gui_path}/book/"
   "da" => "Dansk", # Danish
   "de" => "Deutsch", # German
   "el" => "ελληνικά", # Greek
-  #"en-AU" => "English (Austrailian)", # English (Australian)
+  #"en-AU" => "English (Australian)", # English (Australian)
   "en-GB" => "English (UK)", # English (UK) - default language
-  "en-US" => "English (North American)", # English (US)
+  "en-US" => "English (US)", # English (US)
   #"eo" => "Esperanto", # Esperanto
   "es" => "Español", # Spanish
   "et" => "Eesti keel", # Estonian
@@ -109,9 +113,30 @@ end.parse!
 
 
 # Create the tab entry and the html pages for a section of the documentation
-# valid names: lang, synths, fx, samples, examples
-def make_doc_tab(name, doc_items, titleize=false, should_sort=true, with_keyword=false, page_break=false, chapters=false, lang="en")
+#
+# ==== Attributes
+#
+# * +name+ - the name of the tab; valid names: lang, synths, fx, samples, examples
+# * +doc_items+ - a hash of all the html pages of the tab; the keys are used as
+#                 the filenames of the individual generated help files
+# * +titles+ - a hash of titles of the pages; if nil, then the keys of doc_items will be used for the titles
+# * +titleize+ - Whether to titleize the title or not
+# * +should_sort+ - whether to sort the pages by name
+# * +with_keyword+
+# * +page_break+
+# * +chapters+
+# * +lang+ - the language of the tab
+#
+# ====
+# HTML files for all the pages are generated in "app/gui/qt/help/#{name}/#{lang}/"
+# The HTML book file is generated at "app/gui/qt/book/Sonic Pi - #{name} (#{lang}).html"
+#
+# Returns the map of the titles to the keywords and file names to be used in ruby_help.h
+#
+def make_doc_tab(name, doc_items, titles=nil, titleize=false, should_sort=true, with_keyword=false, page_break=false, chapters=false, lang="en")
   return if doc_items.empty?
+
+  puts("#{name} #{lang}")
 
   FileUtils::rm_rf "#{qt_gui_path}/help/#{name}/#{lang}/"
   FileUtils::mkdir_p "#{qt_gui_path}/help/#{name}/#{lang}/"
@@ -132,7 +157,20 @@ def make_doc_tab(name, doc_items, titleize=false, should_sort=true, with_keyword
 
   # Iterate through each item
   doc_items.each do |n, doc|
-    title = n
+    # Make sure the file name is valid
+    item_name = n.tr("<>:\"/\\|?*", "_").gsub("([\\s])+", " ").lstrip()
+    #item_var = "#{name}_item_#{@count+=1}"
+    #item_var = "#{name}_#{item_name}_#{@count+=1}"
+    item_var = "#{name}_#{item_name}"
+
+    filename = "help/#{name}/#{lang}/#{item_name}.html"
+
+    if titles
+      title = titles[n]
+    else
+      title = n
+    end
+
     if titleize == :titleize then
       title = ActiveSupport::Inflector.titleize(title)
       # HPF et al get capitalized
@@ -140,12 +178,6 @@ def make_doc_tab(name, doc_items, titleize=false, should_sort=true, with_keyword
         title = title.upcase
       end
     end
-
-    #item_var = "#{name}_item_#{@count+=1}"
-    item_var = "#{name}_item_#{n.tr("<>:\"/\\|?* \t\n\r", "_").lstrip()}_#{@count+=1}"
-    # Make sure the file name is valid
-    file = n.tr("<>:\"/\\|?*", "_").gsub("([\\s])+", " ").lstrip()
-    filename = "help/#{name}/#{lang}/#{file}.html"
 
     # Add table of contents listing
     # Check if to go up or down a level
@@ -172,7 +204,7 @@ def make_doc_tab(name, doc_items, titleize=false, should_sort=true, with_keyword
     docs << ", "
 
     if with_keyword then
-      docs << "\"#{n.downcase}\""
+      docs << "\"#{item_name.downcase}\""
     else
       docs << "NULL"
     end
@@ -231,6 +263,8 @@ end
 def make_tutorial(lang)
   docs = "// Tutorial - language #{lang}\n"
   tutorial_html_map = {}
+  tutorial_titles = {}
+
   if lang == "en" then
     markdown_path = tutorial_path
   else
@@ -238,17 +272,23 @@ def make_tutorial(lang)
   end
   Dir["#{markdown_path}/*.md"].sort.each do |path|
     f = File.open(path, 'r:UTF-8')
+    name = File.basename(path, ".md") #.delete_prefix("0")
+
     # read first line (title) of the markdown, use as title
-    name = f.readline.strip
+    title = f.readline.strip
     # indent subchapters
-    name = "   #{name}" if name.match(/\A[A-Z0-9]+\.[0-9]+ /)
+    title = "   #{title}" if title.match(/\A[A-Z0-9]+\.[0-9]+ /)
+
     # read remaining content of markdown
     markdown = f.read
     html = SonicPi::MarkdownConverter.convert markdown
+
     tutorial_html_map[name] = html
+    tutorial_titles[name] = title
   end
 
-  return make_doc_tab("tutorial", tutorial_html_map, false, false, false, true, true, lang)
+  docs << make_doc_tab("tutorial", tutorial_html_map, tutorial_titles, false, false, false, true, true, lang)
+  return docs
 end
 
 def generate_all_tutorials
@@ -290,28 +330,28 @@ def generate_lang_docs
   }
 
   docs = "void MainWindow::addLangDocsTab() {\n"
-  docs << make_doc_tab("lang", SonicPi::Lang::Core.docs_html_map.merge(SonicPi::Lang::Sound.docs_html_map).merge(ruby_html_map), false, true, true, false)
+  docs << make_doc_tab("lang", SonicPi::Lang::Core.docs_html_map.merge(SonicPi::Lang::Sound.docs_html_map).merge(ruby_html_map), nil, false, true, true, false)
   docs << "}\n"
   return docs
 end
 
 def generate_synth_docs
   docs = "void MainWindow::addSynthDocsTab() {\n"
-  docs << make_doc_tab("synths", SonicPi::Synths::SynthInfo.synth_doc_html_map, :titleize, true, true, true)
+  docs << make_doc_tab("synths", SonicPi::Synths::SynthInfo.synth_doc_html_map, nil, :titleize, true, true, true)
   docs << "}\n"
   return docs
 end
 
 def generate_fx_docs
   docs = "void MainWindow::addFXDocsTab() {\n"
-  docs << make_doc_tab("fx", SonicPi::Synths::SynthInfo.fx_doc_html_map, :titleize, true, true, true)
+  docs << make_doc_tab("fx", SonicPi::Synths::SynthInfo.fx_doc_html_map, nil, :titleize, true, true, true)
   docs << "}\n"
   return docs
 end
 
 def generate_sample_docs
   docs = "void MainWindow::addSampleDocsTab() {\n"
-  make_doc_tab("samples", SonicPi::Synths::SynthInfo.samples_doc_html_map, false, true, false, true)
+  make_doc_tab("samples", SonicPi::Synths::SynthInfo.samples_doc_html_map, nil, false, true, false, true)
   docs << "}\n"
   return docs
 end
@@ -339,7 +379,7 @@ def generate_examples
   end
 
   docs = "void MainWindow::addExamplesDocsTab() {\n"
-  docs << make_doc_tab("examples", example_html_map, false, false, false, true)
+  docs << make_doc_tab("examples", example_html_map, nil, false, false, false, true)
   docs << "}\n"
   return docs
 end
