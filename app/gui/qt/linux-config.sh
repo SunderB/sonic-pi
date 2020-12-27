@@ -21,10 +21,12 @@ elif [ ! -z $1 ]; then
 fi
 
 echo "Creating build directory..."
+rm -r "${SCRIPT_DIR}/build"
 mkdir -p "${SCRIPT_DIR}/build"
 
 echo "Generating makefiles..."
+echo "Using CMake configuration ${config}"
 cd "${SCRIPT_DIR}/build"
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=\"$config\" ..
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=$config ..
 
 cd "${SCRIPT_DIR}"

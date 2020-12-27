@@ -146,7 +146,7 @@ MainWindow::MainWindow(QApplication &app, QSplashScreen* splash)
     initProcess->waitForFinished();
 
     // Throw all stdout into ~/.sonic-pi/log/gui.log
-    setupLogPathAndRedirectStdOut();
+    //setupLogPathAndRedirectStdOut();
 
     std::cout << "[GUI] - Welcome to the Sonic Pi GUI" << std::endl;
     std::cout << "[GUI] - ===========================" << std::endl;
@@ -184,8 +184,7 @@ MainWindow::MainWindow(QApplication &app, QSplashScreen* splash)
 
     // The implementation of this method is dynamically generated and can
     // be found in ruby_help.h:
-    std::cout << "[GUI] - initialising documentation window" << std::endl;
-    initDocsWindow(language);
+    createDocTabs();
 
     //setup autocompletion
     autocomplete->loadSamples(sample_path);
@@ -250,6 +249,41 @@ MainWindow::MainWindow(QApplication &app, QSplashScreen* splash)
     app.setActiveWindow(tabs->currentWidget());
     showWelcomeScreen();
 
+
+}
+
+void MainWindow::createDocTabs() {
+  // Delete all existing tabs if there are any
+  size_t length = docsCentral->count();
+  std::cout << "[GUI] - number of tabs: " << length << std::endl;
+  if (length != 0) {
+    for (int i = length - 1; i >= 0; i--) {
+      std::cout << "[GUI] - removing doc tab " << i << std::endl;
+      QWidget* tab = docsCentral->widget(i);
+      docsCentral->removeTab(i);
+      delete docsCentral->widget(i);
+      delete tab;
+    }
+  }
+
+  size_t helplists_length = helpLists.size();
+  std::cout << "[GUI] - number of tabs: " << length << std::endl;
+  if (length != 0) {
+    for (int i = helplists_length - 1; i >= 0; i--) {
+      if (helpLists[i] != nullptr) {
+        QListWidget* temp = helpLists[i];
+        delete temp;
+      }
+    }
+  }
+
+  // Create new tabs
+  std::cout << "[GUI] - initialising documentation window" << std::endl;
+  initDocsWindow(ui_language);
+  std::cout << "[GUI] - new no. of tabs: " << docsCentral->count() << std::endl;
+
+  //docsCentral->setCurrentIndex(0);
+  //helpLists[0]->setCurrentRow(0);
 
 }
 
@@ -467,8 +501,8 @@ void MainWindow::showWelcomeScreen() {
         source = source.replace("50dx", QString("%1px").arg(ScaleHeightForDPI(32)));
         startupPane->setHtml(source);
         docWidget->show();
-        docsCentral->setCurrentIndex(0);
-        helpLists[0]->setCurrentRow(0);
+        //docsCentral->setCurrentIndex(0);
+        //helpLists[0]->setCurrentRow(0);
         startupPane->show();
         startupPane->raise();
         startupPane->activateWindow();
@@ -1961,6 +1995,8 @@ void MainWindow::changeUILanguage(QString lang) {
 
     qtTranslator->load("qt_" + lang, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app->installTranslator(qtTranslator);
+
+    app->setApplicationName(QObject::tr("Sonic Pi"));
 
     ui_language = lang;
 
@@ -4000,6 +4036,10 @@ void MainWindow::updateTranslatedUIText() {
 
   // Update text in other widgets
   settingsWidget->updateTranslatedUIText();
+
+  // Reload documentation
+  createDocTabs();
+
 }
 
 bool MainWindow::initTranslations(QString lang = "system_locale") {

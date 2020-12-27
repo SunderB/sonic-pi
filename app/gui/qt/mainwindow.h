@@ -270,6 +270,7 @@ signals:
         void cleanupRunningProcesses();
         bool waitForServiceSync();
         void clearOutputPanels();
+        void createDocTabs();
         void createShortcuts();
         void createToolBar();
         void createStatusBar();
@@ -287,8 +288,17 @@ signals:
         std::string workspaceFilename(SonicPiScintilla* text);
         SonicPiScintilla* filenameToWorkspace(std::string filename);
         bool sendOSC(oscpkt::Message m);
+
         //   void initPrefsWindow();
         void initDocsWindow(QString language);
+        void addTutorialDocsTab(QString lang);
+        void addSynthDocsTab();
+        void addFXDocsTab();
+        void addSampleDocsTab();
+        void addLangDocsTab();
+        void addExamplesDocsTab();
+        void addAutocompleteArgs();
+
         void refreshDocContent();
         void addHelpPage(QListWidget *nameList, struct help_page *helpPages,
                 int len);
