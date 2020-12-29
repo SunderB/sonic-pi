@@ -292,7 +292,7 @@ def make_tutorial(lang)
 end
 
 def generate_all_tutorials
-  docs = "void MainWindow::addTutorialDocsTab(QString lang) {\n"
+  docs = "void DocsWidget::addTutorialDocsTab(QString lang) {\n"
   tutorial_languages =
     Dir[File.expand_path("../lang/sonic-pi-tutorial-*.po", tutorial_path)].
     map { |p| File.basename(p).gsub(/sonic-pi-tutorial-(.*?).po/, '\1') }
@@ -329,28 +329,28 @@ def generate_lang_docs
   #  "loop" => "Loop forever",
   }
 
-  docs = "void MainWindow::addLangDocsTab() {\n"
+  docs = "void DocsWidget::addLangDocsTab() {\n"
   docs << make_doc_tab("lang", SonicPi::Lang::Core.docs_html_map.merge(SonicPi::Lang::Sound.docs_html_map).merge(ruby_html_map), nil, false, true, true, false)
   docs << "}\n"
   return docs
 end
 
 def generate_synth_docs
-  docs = "void MainWindow::addSynthDocsTab() {\n"
+  docs = "void DocsWidget::addSynthDocsTab() {\n"
   docs << make_doc_tab("synths", SonicPi::Synths::SynthInfo.synth_doc_html_map, nil, :titleize, true, true, true)
   docs << "}\n"
   return docs
 end
 
 def generate_fx_docs
-  docs = "void MainWindow::addFXDocsTab() {\n"
+  docs = "void DocsWidget::addFXDocsTab() {\n"
   docs << make_doc_tab("fx", SonicPi::Synths::SynthInfo.fx_doc_html_map, nil, :titleize, true, true, true)
   docs << "}\n"
   return docs
 end
 
 def generate_sample_docs
-  docs = "void MainWindow::addSampleDocsTab() {\n"
+  docs = "void DocsWidget::addSampleDocsTab() {\n"
   make_doc_tab("samples", SonicPi::Synths::SynthInfo.samples_doc_html_map, nil, false, true, false, true)
   docs << "}\n"
   return docs
@@ -378,14 +378,14 @@ def generate_examples
     end
   end
 
-  docs = "void MainWindow::addExamplesDocsTab() {\n"
+  docs = "void DocsWidget::addExamplesDocsTab() {\n"
   docs << make_doc_tab("examples", example_html_map, nil, false, false, false, true)
   docs << "}\n"
   return docs
 end
 
 def generate_autocomplete
-  docs = "void MainWindow::addAutocompleteArgs() {\n"
+  docs = "void DocsWidget::addAutocompleteArgs() {\n"
   docs << "  // FX & Synth arguments for autocompletion\n"
   docs << "  QStringList fxtmp;\n"
   SonicPi::Synths::SynthInfo.get_all.each do |k, v|
@@ -398,7 +398,7 @@ def generate_autocomplete
       docs << "<< \"#{ak}:\" ";
     end
     docs << ";\n"
-    docs << "  autocomplete->addFXArgs(\":#{safe_k}\", fxtmp);\n"
+    docs << "  mainWindow->autocomplete->addFXArgs(\":#{safe_k}\", fxtmp);\n"
   end
 
   docs << "\n\n"
@@ -411,7 +411,7 @@ def generate_autocomplete
       docs << "<< \"#{ak}:\" ";
     end
     docs << ";\n"
-    docs << "  autocomplete->addSynthArgs(\":#{k}\", fxtmp);\n"
+    docs << "  mainWindow->autocomplete->addSynthArgs(\":#{k}\", fxtmp);\n"
   end
   docs << "}\n"
 
@@ -496,6 +496,9 @@ new_content << "// otherwise it will be removed\n"
 new_content << "\n"
 new_content << "#ifndef RUBY_HELP_H\n"
 new_content << "#define RUBY_HELP_H\n"
+#new_content << "class SonicPiAPIs;\n"
+new_content << "#include \"../utils/sonicpiapis.h\"\n"
+new_content << "\n"
 new_content << generate_all_tutorials()
 new_content << generate_synth_docs()
 new_content << generate_fx_docs()
@@ -504,7 +507,7 @@ new_content << generate_lang_docs()
 new_content << generate_examples()
 new_content << generate_autocomplete()
 new_content << "\n\n"
-new_content << "void MainWindow::initDocsWindow(QString lang) {
+new_content << "void DocsWidget::initDocsWindow(QString lang) {
   addTutorialDocsTab(lang);
   addSynthDocsTab();
   addFXDocsTab();

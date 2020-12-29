@@ -65,9 +65,8 @@
 #include "widgets/infowidget.h"
 #include "model/settings.h"
 #include "widgets/settingswidget.h"
+#include "widgets/docswidget.h"
 #include "widgets/sonicpicontext.h"
-
-#include "utils/ruby_help.h"
 
 #include "dpi.h"
 
@@ -184,7 +183,7 @@ MainWindow::MainWindow(QApplication &app, QSplashScreen* splash)
 
     // The implementation of this method is dynamically generated and can
     // be found in ruby_help.h:
-    createDocTabs();
+    docsplit->createDocTabs(ui_language);
 
     //setup autocompletion
     autocomplete->loadSamples(sample_path);
@@ -252,40 +251,6 @@ MainWindow::MainWindow(QApplication &app, QSplashScreen* splash)
 
 }
 
-void MainWindow::createDocTabs() {
-  // Delete all existing tabs if there are any
-  size_t length = docsCentral->count();
-  std::cout << "[GUI] - number of tabs: " << length << std::endl;
-  if (length != 0) {
-    for (int i = length - 1; i >= 0; i--) {
-      std::cout << "[GUI] - removing doc tab " << i << std::endl;
-      QWidget* tab = docsCentral->widget(i);
-      docsCentral->removeTab(i);
-      delete docsCentral->widget(i);
-      delete tab;
-    }
-  }
-
-  size_t helplists_length = helpLists.size();
-  std::cout << "[GUI] - number of tabs: " << length << std::endl;
-  if (length != 0) {
-    for (int i = helplists_length - 1; i >= 0; i--) {
-      if (helpLists[i] != nullptr) {
-        QListWidget* temp = helpLists[i];
-        delete temp;
-      }
-    }
-  }
-
-  // Create new tabs
-  std::cout << "[GUI] - initialising documentation window" << std::endl;
-  initDocsWindow(ui_language);
-  std::cout << "[GUI] - new no. of tabs: " << docsCentral->count() << std::endl;
-
-  //docsCentral->setCurrentIndex(0);
-  //helpLists[0]->setCurrentRow(0);
-
-}
 
 bool MainWindow::initAndCheckPorts() {
     std::cout << "[GUI] - Discovering port numbers..." << std::endl;
@@ -840,43 +805,7 @@ void MainWindow::setupWindowStructure() {
     blankWidget = new QWidget();
     outputWidgetTitle = outputWidget->titleBarWidget();
 
-    docsCentral = new QTabWidget;
-    docsCentral->setFocusPolicy(Qt::NoFocus);
-    docsCentral->setTabsClosable(false);
-    docsCentral->setMovable(false);
-    docsCentral->setTabPosition(QTabWidget::South);
-    QShortcut *left = new QShortcut(Qt::Key_Left, docsCentral);
-    left->setContext(Qt::WidgetWithChildrenShortcut);
-    connect(left, SIGNAL(activated()), this, SLOT(docPrevTab()));
-    QShortcut *right = new QShortcut(Qt::Key_Right, docsCentral);
-    right->setContext(Qt::WidgetWithChildrenShortcut);
-    connect(right, SIGNAL(activated()), this, SLOT(docNextTab()));
-
-    docPane = new QTextBrowser;
-    QSizePolicy policy = docPane->sizePolicy();
-    policy.setHorizontalStretch(QSizePolicy::Maximum);
-    docPane->setSizePolicy(policy);
-    docPane->setMinimumHeight(100);
-    docPane->setOpenLinks(false);
-    docPane->setOpenExternalLinks(true);
-    docPane->setStyle(new BorderlessLinksProxyStyle);
-    connect(docPane, SIGNAL(anchorClicked(const QUrl &)), this, SLOT(docLinkClicked(const QUrl &)));
-
-    QShortcut *up = new QShortcut(ctrlKey('p'), docPane);
-    up->setContext(Qt::WidgetShortcut);
-    connect(up, SIGNAL(activated()), this, SLOT(docScrollUp()));
-    QShortcut *down = new QShortcut(ctrlKey('n'), docPane);
-    down->setContext(Qt::WidgetShortcut);
-    connect(down, SIGNAL(activated()), this, SLOT(docScrollDown()));
-
-    docPane->setSource(QUrl("qrc:///html/doc.html"));
-
-    addUniversalCopyShortcuts(docPane);
-
-    docsplit = new QSplitter;
-
-    docsplit->addWidget(docsCentral);
-    docsplit->addWidget(docPane);
+    docsplit = new DocsWidget(this);
 
     docWidget = new QDockWidget(tr("Help"), this);
     docWidget->setFocusPolicy(Qt::NoFocus);
@@ -911,7 +840,7 @@ void MainWindow::docLinkClicked(const QUrl &url) {
     if (url.scheme() == "sonicpi") {
         handleCustomUrl(url);
     } else if (url.isRelative() || url.isLocalFile() || url.scheme() == "qrc") {
-        docPane->setSource(url);
+        docsplit->docPane->setSource(url);
     } else {
         QDesktopServices::openUrl(url);
     }
@@ -1947,9 +1876,9 @@ void MainWindow::helpContext() {
     if (selection[0] == ':')
         selection = selection.mid(1);
 
-    if (helpKeywords.contains(selection)) {
-        struct help_entry entry = helpKeywords[selection];
-        QListWidget *list = helpLists[entry.pageIndex];
+    if (docsplit->helpKeywords.contains(selection)) {
+        struct help_entry entry = docsplit->helpKeywords[selection];
+        QListWidget *list = docsplit->helpLists[entry.pageIndex];
 
         // force current row to be changed
         // by setting it to a different value to
@@ -1961,7 +1890,7 @@ void MainWindow::helpContext() {
         } else {
             list->setCurrentRow(0);
         }
-        docsCentral->setCurrentIndex(entry.pageIndex);
+        docsplit->docsCentral->setCurrentIndex(entry.pageIndex);
         list->setCurrentRow(entry.entryIndex);
     }
 }
@@ -2154,8 +2083,8 @@ void MainWindow::updateColourTheme(){
     QString css = theme->getCss();
     toggleIcons();
 
-    docPane->document()->setDefaultStyleSheet(css);
-    docPane->reload();
+    docsplit->docPane->document()->setDefaultStyleSheet(css);
+    docsplit->docPane->reload();
 
     foreach(QTextBrowser* pane, infoPanes) {
         pane->document()->setDefaultStyleSheet(css);
@@ -2179,7 +2108,7 @@ void MainWindow::updateColourTheme(){
     tabs->setStyleSheet("");
     //TODO inject to settings Widget
     //prefTabs->setStyleSheet("");
-    docsCentral->setStyleSheet("");
+    docsplit->docsCentral->setStyleSheet("");
     docWidget->setStyleSheet("");
     toolBar->setStyleSheet("");
     scopeWidget->setStyleSheet("");
@@ -3450,7 +3379,7 @@ void MainWindow::heartbeatOSC() {
 
 void MainWindow::updateDocPane(QListWidgetItem *cur) {
     QString url = cur->data(32).toString();
-    docPane->setSource(QUrl(url));
+    docsplit->docPane->setSource(QUrl(url));
 }
 
 void MainWindow::updateDocPane2(QListWidgetItem *cur, QListWidgetItem *prev) {
@@ -3458,99 +3387,6 @@ void MainWindow::updateDocPane2(QListWidgetItem *cur, QListWidgetItem *prev) {
     updateDocPane(cur);
 }
 
-void MainWindow::addHelpPage(QListWidget *nameList, struct help_page *helpPages, int len) {
-    int i;
-    struct help_entry entry;
-    entry.pageIndex = docsCentral->count()-1;
-
-    for(i = 0; i < len; i++) {
-        QListWidgetItem *item = new QListWidgetItem(helpPages[i].title);
-        item->setData(32, QVariant(helpPages[i].url));
-        nameList->addItem(item);
-        entry.entryIndex = nameList->count()-1;
-
-        if (helpPages[i].keyword != NULL) {
-            helpKeywords.insert(helpPages[i].keyword, entry);
-            // magic numbers ahoy
-            // to be revamped along with the help system
-            switch (entry.pageIndex) {
-                case 2:
-                    autocomplete->addSymbol(SonicPiAPIs::Synth, helpPages[i].keyword);
-                    break;
-                case 3:
-                    autocomplete->addSymbol(SonicPiAPIs::FX, helpPages[i].keyword);
-                    break;
-                case 5:
-                    autocomplete->addKeyword(SonicPiAPIs::Func, helpPages[i].keyword);
-                    break;
-            }
-        }
-    }
-}
-
-QListWidget *MainWindow::createHelpTab(QString name) {
-    QListWidget *nameList = new QListWidget;
-    connect(nameList,
-            SIGNAL(itemPressed(QListWidgetItem*)),
-            this, SLOT(updateDocPane(QListWidgetItem*)));
-    connect(nameList,
-            SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-            this, SLOT(updateDocPane2(QListWidgetItem*, QListWidgetItem*)));
-
-    QShortcut *up = new QShortcut(ctrlKey('p'), nameList);
-    up->setContext(Qt::WidgetShortcut);
-    connect(up, SIGNAL(activated()), this, SLOT(helpScrollUp()));
-    QShortcut *down = new QShortcut(ctrlKey('n'), nameList);
-    down->setContext(Qt::WidgetShortcut);
-    connect(down, SIGNAL(activated()), this, SLOT(helpScrollDown()));
-
-    QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    layout->addWidget(nameList);
-    layout->setStretch(1, 1);
-    QWidget *tabWidget = new QWidget;
-    tabWidget->setLayout(layout);
-    docsCentral->addTab(tabWidget, name);
-    helpLists.append(nameList);
-    return nameList;
-}
-
-void MainWindow::helpScrollUp() {
-    int section = docsCentral->currentIndex();
-    int entry = helpLists[section]->currentRow();
-
-    if (entry > 0)
-        entry--;
-    helpLists[section]->setCurrentRow(entry);
-}
-
-void MainWindow::helpScrollDown() {
-    int section = docsCentral->currentIndex();
-    int entry = helpLists[section]->currentRow();
-
-    if (entry < helpLists[section]->count()-1)
-        entry++;
-    helpLists[section]->setCurrentRow(entry);
-}
-
-void MainWindow::docPrevTab() {
-    int section = docsCentral->currentIndex();
-    if (section > 0)
-        docsCentral->setCurrentIndex(section - 1);
-}
-
-void MainWindow::docNextTab() {
-    int section = docsCentral->currentIndex();
-    if (section < docsCentral->count() - 1)
-        docsCentral->setCurrentIndex(section + 1);
-}
-
-void MainWindow::docScrollUp() {
-    docPane->verticalScrollBar()->triggerAction(QAbstractSlider::SliderSingleStepSub);
-}
-
-void MainWindow::docScrollDown() {
-    docPane->verticalScrollBar()->triggerAction(QAbstractSlider::SliderSingleStepAdd);
-}
 
 void MainWindow::tabNext() {
     int index = tabs->currentIndex();
@@ -3885,22 +3721,13 @@ void MainWindow::focusPreferences() {
 void MainWindow::focusHelpListing() {
   docWidget->show();
   updatePrefsIcon();
-  docsCentral->showNormal();
-  docsCentral->currentWidget()->setFocus();
-  docsCentral->raise();
-  docsCentral->setVisible(true);
-  docsCentral->activateWindow();
+  docsplit->focusHelpListing();
 }
 
 void MainWindow::focusHelpDetails(){
   docWidget->show();
   updatePrefsIcon();
-  docPane->showNormal();
-  docPane->setFocusPolicy(Qt::StrongFocus);
-  docPane->setFocus();
-  docPane->raise();
-  docPane->setVisible(true);
-  docPane->activateWindow();
+  docsplit->focusHelpDetails();
 }
 
 void MainWindow::focusErrors(){
@@ -4038,7 +3865,7 @@ void MainWindow::updateTranslatedUIText() {
   settingsWidget->updateTranslatedUIText();
 
   // Reload documentation
-  createDocTabs();
+  docsplit->createDocTabs(ui_language);
 
 }
 

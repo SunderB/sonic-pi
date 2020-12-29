@@ -68,10 +68,10 @@ private slots:
     void synthTriggerTimingGuarantees();
     void enableExternalSynths();
     void midiDefaultChannel();
-    void logCues();
-    void logSynths();
-    void clearOutputOnRun();
-    void autoIndentOnRun();
+    //void logCues();
+    //void logSynths();
+    //void clearOutputOnRun();
+    //void autoIndentOnRun();
 
 signals:
     void uiLanguageChanged(QString lang);
@@ -164,6 +164,7 @@ private:
     QCheckBox *studio_mode;
     QCheckBox *show_autocompletion;
     QCheckBox *show_context;
+    QCheckBox *print_output;
 
     QComboBox *midi_default_channel_combo;
     QLabel *midi_default_channel_label;

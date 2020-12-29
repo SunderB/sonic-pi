@@ -40,6 +40,7 @@ public:
     int gui_transparency;
     bool show_autocompletion;
     bool show_context;
+    bool print_output;
     SonicPiTheme::Style themeStyle;
 
     // UpdateSettings;

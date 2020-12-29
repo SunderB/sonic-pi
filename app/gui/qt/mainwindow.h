@@ -22,6 +22,7 @@
 #include <fstream>
 #include <QIcon>
 #include <vector>
+#include <QTranslator>
 
 class QAction;
 class QMenu;
@@ -46,8 +47,10 @@ class QVBoxLayout;
 class QTcpSocket;
 class QSplashScreen;
 class QLabel;
+class QTranslator;
 
 class InfoWidget;
+class DocsWidget;
 class SettingsWidget;
 class Scope;
 class SonicPiAPIs;
@@ -59,32 +62,32 @@ class SonicPiLexer;
 class SonicPiSettings;
 class SonicPiContext;
 
-struct help_page {
-    QString title;
-    QString keyword;
-    QString url;
-};
-
-struct help_entry {
-    int pageIndex;
-    int entryIndex;
-};
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
     public:
 #if defined(Q_OS_MAC)
-        MainWindow(QApplication &ref, QString language, bool i18n, QMainWindow* splash);
+        MainWindow(QApplication &ref, QMainWindow* splash);
 #else
-        MainWindow(QApplication &ref, QString language, bool i18n, QSplashScreen* splash);
+        MainWindow(QApplication &ref, QSplashScreen* splash);
 #endif
 
         SonicPiOSCServer *sonicPiOSCServer;
         enum {UDP=0, TCP=1};
         bool loaded_workspaces;
         QString hash_salt;
+        SonicPiAPIs *autocomplete;
+
+        QKeySequence metaKey(char key);
+        Qt::Modifier metaKeyModifier();
+        QKeySequence shiftMetaKey(char key);
+        QKeySequence ctrlMetaKey(char key);
+        QKeySequence ctrlShiftMetaKey(char key);
+        QKeySequence ctrlShiftKey(char key);
+        QKeySequence ctrlKey(char key);
+
+        void addUniversalCopyShortcuts(QTextEdit *te);
 
     protected:
         void closeEvent(QCloseEvent *event);
@@ -205,12 +208,7 @@ signals:
         void tabGoto(int index);
         void helpContext();
         void resetErrorPane();
-        void helpScrollUp();
-        void helpScrollDown();
-        void docPrevTab();
-        void docNextTab();
-        void docScrollUp();
-        void docScrollDown();
+
         void updateFullScreenMode();
         void toggleFullScreenMode();
         void fullScreenMenuChanged();
@@ -289,27 +287,10 @@ signals:
         SonicPiScintilla* filenameToWorkspace(std::string filename);
         bool sendOSC(oscpkt::Message m);
 
-        //   void initPrefsWindow();
-        void initDocsWindow(QString language);
-        void addTutorialDocsTab(QString lang);
-        void addSynthDocsTab();
-        void addFXDocsTab();
-        void addSampleDocsTab();
-        void addLangDocsTab();
-        void addExamplesDocsTab();
-        void addAutocompleteArgs();
 
         void refreshDocContent();
-        void addHelpPage(QListWidget *nameList, struct help_page *helpPages,
-                int len);
-        QListWidget *createHelpTab(QString name);
-        QKeySequence metaKey(char key);
-        Qt::Modifier metaKeyModifier();
-        QKeySequence shiftMetaKey(char key);
-        QKeySequence ctrlMetaKey(char key);
-        QKeySequence ctrlShiftMetaKey(char key);
-        QKeySequence ctrlShiftKey(char key);
-        QKeySequence ctrlKey(char key);
+
+
         char int2char(int i);
         void updateAction(QAction *action, QShortcut *sc, QString tooltip, QString desc);
         QString tooltipStrShiftMeta(char key, QString str);
@@ -317,10 +298,10 @@ signals:
         QString readFile(QString name);
         QString rootPath();
 
-        void addUniversalCopyShortcuts(QTextEdit *te);
         void updateTranslatedUIText();
+        bool initTranslations(QString lang);
 
-  QMenu *liveMenu, *codeMenu, *audioMenu, *displayMenu, *viewMenu, *ioMenu, *ioMidiInMenu, *ioMidiOutMenu, *ioMidiOutChannelMenu, *localIpAddressesMenu, *themeMenu, *scopeKindVisibilityMenu;
+        QMenu *liveMenu, *codeMenu, *audioMenu, *displayMenu, *viewMenu, *ioMenu, *ioMidiInMenu, *ioMidiOutMenu, *ioMidiOutChannelMenu, *localIpAddressesMenu, *themeMenu, *scopeKindVisibilityMenu;
 
         SonicPiSettings *piSettings;
 
@@ -342,6 +323,8 @@ signals:
 #endif
 
         bool i18n;
+        QString ui_language;
+
         static const int workspace_max = 10;
         SonicPiScintilla *workspaces[workspace_max];
         QWidget *prefsCentral;
@@ -358,7 +341,7 @@ signals:
         QDockWidget *contextWidget;
         QWidget *blankWidget;
         QWidget *outputWidgetTitle;
-        QTextBrowser *docPane;
+
         //  QTextBrowser *hudPane;
         QWidget *mainWidget;
         QDockWidget *scopeWidget;
@@ -387,12 +370,13 @@ signals:
         QTextEdit *startupPane;
         QVBoxLayout *mainWidgetLayout;
 
-        QList<QListWidget *> helpLists;
-        QHash<QString, help_entry> helpKeywords;
+        QTranslator *translator;
+        QTranslator *qtTranslator;
+
         std::streambuf *coutbuf;
         std::ofstream stdlog;
 
-        SonicPiAPIs *autocomplete;
+
         QString fetch_url_path, sample_path, log_path, sp_user_path, sp_user_tmp_path, ruby_server_path, ruby_path, server_error_log_path, server_output_log_path, gui_log_path, scsynth_log_path, init_script_path, exit_script_path, tmp_file_store, process_log_path, port_discovery_path, qt_app_theme_path, qt_browser_dark_css, qt_browser_light_css, qt_browser_hc_css;
         QString defaultTextBrowserStyle;
 
@@ -401,7 +385,7 @@ signals:
         QString latest_version;
         int latest_version_num;
 
-        QSplitter *docsplit;
+        DocsWidget *docsplit;
 
         QLabel *versionLabel;
         Scope* scopeInterface;
