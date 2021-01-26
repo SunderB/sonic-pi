@@ -47,6 +47,7 @@
 #include "widgets/sonicpilexer.h"
 #include "widgets/sonicpiscintilla.h"
 #include "utils/sonicpiapis.h"
+#include "utils/sonic_pi_i18n.h"
 #include "model/sonicpitheme.h"
 #include "visualizer/scope.h"
 
@@ -67,6 +68,7 @@
 #include "widgets/sonicpicontext.h"
 
 #include "utils/ruby_help.h"
+#include "utils/paths.h"
 
 #include "dpi.h"
 
@@ -94,9 +96,9 @@ void sleep(int x) { Sleep((x)*1000); }
 
 
 #ifdef Q_OS_MAC
-MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QMainWindow* splash)
+MainWindow::MainWindow(QApplication &app, QMainWindow* splash)
 #else
-MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashScreen* splash)
+MainWindow::MainWindow(QApplication &app, QSplashScreen* splash)
 #endif
 {
     app.installEventFilter(this);
@@ -105,10 +107,7 @@ MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashSc
 
     printAsciiArtLogo();
 
-    this->piSettings = new SonicPiSettings();
-
     this->splash = splash;
-    this->i18n = i18n;
 
     sonicPiOSCServer = NULL;
     startup_error_reported = new QCheckBox;
@@ -132,13 +131,17 @@ MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashSc
     latest_version = "";
     version_num = 0;
     latest_version_num = 0;
-    this->splash = splash;
-    this->i18n = i18n;
     guiID = QUuid::createUuid().toString();
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "sonic-pi.net", "gui-settings");
+    //QSettings settings(QSettings::IniFormat, QSettings::UserScope, "sonic-pi.net", "gui-settings");
+    this->piSettings = new SonicPiSettings();
 
     readSettings();
     initPaths();
+
+    this->sonicPii18n = new SonicPii18n(ROOT_PATH);
+    this->ui_language = sonicPii18n->determineUILanguage(piSettings->language);
+    std::cout << "Using language: " << ui_language.toUtf8().constData() << std::endl;
+    this->i18n = sonicPii18n->loadTranslations(ui_language);
 
     // Clear out old tasks from previous sessions if they still exist
     // in addtition to clearing out the logs
@@ -147,7 +150,7 @@ MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashSc
     initProcess->waitForFinished();
 
     // Throw all stdout into ~/.sonic-pi/log/gui.log
-    setupLogPathAndRedirectStdOut();
+    //setupLogPathAndRedirectStdOut();
 
     std::cout << "[GUI] - Welcome to the Sonic Pi GUI" << std::endl;
     std::cout << "[GUI] - ===========================" << std::endl;
@@ -186,7 +189,7 @@ MainWindow::MainWindow(QApplication &app, QString language, bool i18n, QSplashSc
     // The implementation of this method is dynamically generated and can
     // be found in ruby_help.h:
     std::cout << "[GUI] - initialising documentation window" << std::endl;
-    initDocsWindow(language);
+    initDocsWindow(ui_language);
 
     //setup autocompletion
     autocomplete->loadSamples(sample_path);
@@ -335,7 +338,7 @@ bool MainWindow::initAndCheckPorts() {
 
 
 void MainWindow::initPaths() {
-    QString root_path = rootPath();
+    QString root_path = ROOT_PATH;
 
 #if defined(Q_OS_WIN)
     ruby_path = QDir::toNativeSeparators(root_path + "/app/server/native/ruby/bin/ruby.exe");
@@ -484,7 +487,7 @@ void MainWindow::showWelcomeScreen() {
 void MainWindow::setupTheme() {
     // Syntax highlighting
     QString themeFilename = QDir::homePath() + QDir::separator() + ".sonic-pi" + QDir::separator() + "config" + QDir::separator() + "colour-theme.properties";
-    this->theme = new SonicPiTheme(this, themeFilename, rootPath());
+    this->theme = new SonicPiTheme(this, themeFilename, ROOT_PATH);
 }
 
 void MainWindow::setupWindowStructure() {
@@ -523,7 +526,7 @@ void MainWindow::setupWindowStructure() {
     prefsWidget->setAllowedAreas(Qt::RightDockWidgetArea);
     prefsWidget->setFeatures(QDockWidget::DockWidgetClosable);
 
-    settingsWidget = new SettingsWidget(server_osc_cues_port, i18n, piSettings, this);
+    settingsWidget = new SettingsWidget(server_osc_cues_port, i18n, piSettings, sonicPii18n, this);
     connect(settingsWidget, SIGNAL(uiLanguageChanged(QString)), this, SLOT(changeUILanguage(QString)));
     connect(settingsWidget, SIGNAL(volumeChanged(int)), this, SLOT(changeSystemPreAmp(int)));
     connect(settingsWidget, SIGNAL(mixerSettingsChanged()), this, SLOT(mixerSettingsChanged()));
@@ -1167,20 +1170,6 @@ void MainWindow::toggleComment(SonicPiScintilla* ws) {
     sendOSC(msg);
 }
 
-QString MainWindow::rootPath() {
-    // diversity is the spice of life
-#if defined(Q_OS_MAC)
-    return QCoreApplication::applicationDirPath() + "/../Resources";
-#elif defined(Q_OS_WIN)
-    // CMake builds, the exe is in build/debug/sonic-pi, etc.
-    // We should pass this to the build instead of wiring it up this way!
-    return QCoreApplication::applicationDirPath() + "/../../../../..";
-#else
-    // On linux, CMake builds app into the build folder
-    return QCoreApplication::applicationDirPath() + "/../../../..";
-#endif
-}
-
 void MainWindow::startRubyServer(){
 
     // kill any zombie processes that may exist
@@ -1223,7 +1212,7 @@ void MainWindow::startRubyServer(){
     // Register server pid for potential zombie clearing
     QStringList regServerArgs;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 3, 0)
-    regServerArgs << QDir::toNativeSeparators(rootPath() + "/app/server/ruby/bin/task-register.rb")<< QString::number(serverProcess->processId());
+    regServerArgs << QDir::toNativeSeparators(ROOT_PATH + "/app/server/ruby/bin/task-register.rb")<< QString::number(serverProcess->processId());
 #endif
     QProcess *regServerProcess = new QProcess();
     regServerProcess->start(ruby_path, regServerArgs);
@@ -1956,23 +1945,38 @@ void MainWindow::changeSystemPreAmp(int val, int silent)
 }
 
 void MainWindow::changeUILanguage(QString lang) {
-    piSettings->language = lang;
-    std::cout << "Using language: " << lang.toUtf8().constData() << std::endl;
+    if (lang != piSettings->language) {
+      std::cout << "New language selected: " << lang.toUtf8().constData() << std::endl;
+      QString old_lang = sonicPii18n->getNativeLanguageName(piSettings->language);
+      QString new_lang = sonicPii18n->getNativeLanguageName(lang);
 
-    QTranslator qtTranslator;
-    QTranslator translator;
-    QApplication* app = dynamic_cast<QApplication*>(parent());
+      // Load new language
+      //QString language = sonicPii18n->determineUILanguage(lang);
+      //sonicPii18n->loadTranslations(language);
+      //QString title_new = tr("Updated the UI language from %s to %s").arg();
 
-    i18n = translator.load("sonic-pi_" + lang, ":/lang/") || lang.startsWith("en") || lang == "C";
-    app->installTranslator(&translator);
+      QMessageBox msgBox(this);
+      msgBox.setText(tr("You've selected a new language: %s").arg(new_lang));
+      msgBox.setInformativeText(tr("Do you want to apply these new settings?\nApplying the new language will restart Sonic Pi."));
+      QPushButton *restartButton = msgBox.addButton(tr("Apply & Restart"), QMessageBox::ActionRole);
+      QPushButton *dismissButton = msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
+      msgBox.setDefaultButton(restartButton);
+      msgBox.setIcon(QMessageBox::Information);
+      msgBox.exec();
 
-    qtTranslator.load("qt_" + lang, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app->installTranslator(&qtTranslator);
+      if (msgBox.clickedButton() == (QAbstractButton*)restartButton) {
+          piSettings->language = lang;
+          writeSettings();
+          restartApp();
+          //statusBar()->showMessage(tr("Updated UI language setting, please restart Sonic Pi to apply it"), 2000);
+      } else if (msgBox.clickedButton() == (QAbstractButton*)dismissButton) {
+          settingsWidget->updateSelectedUILanguage(piSettings->language);
+      }
 
-    updateTranslatedUIText();
-    statusBar()->showMessage(tr("Updated UI language"), 5000);
+      // Load previously set language
+      //sonicPii18n->loadTranslations(ui_language);
+    }
 
-    //statusBar()->showMessage(tr("Updated UI language setting, please restart Sonic Pi to apply it"), 2000);
 }
 
 
@@ -3403,6 +3407,24 @@ void MainWindow::onExitCleanup()
     std::cout.rdbuf(coutbuf); // reset to stdout before exiting
 }
 
+void MainWindow::restartApp() {
+    QApplication* app = dynamic_cast<QApplication*>(parent());
+    statusBar()->showMessage(tr("Restarting Sonic Pi..."), 10000);
+    // Save settings and perform some cleanup
+    writeSettings();
+    onExitCleanup();
+    sleep(1);
+    std::cout << "Performing application restart... please wait..." << std::endl;
+    //this->hide(); // So it doesn't look like the app's frozen or crashed
+    sleep(4); // Allow cleanup to complete
+    // Create new process
+    QProcess process;
+    process.startDetached("sonic-pi", QStringList());
+    // Quit
+    app->exit(0);
+    exit(0);
+}
+
 void MainWindow::cleanupRunningProcesses()
 {
     std::cout << "[GUI] - executing exit script" << std::endl;
@@ -4005,7 +4027,5 @@ void MainWindow::updateTranslatedUIText() {
   // =====
 
   // Update text in other widgets
-  settingsWidget->updateTranslatedUIText()
-
-
+  settingsWidget->updateTranslatedUIText();
 }

@@ -14,6 +14,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+
 #include <QDate>
 #include <QMainWindow>
 #include <QFuture>
@@ -51,6 +52,7 @@ class InfoWidget;
 class SettingsWidget;
 class Scope;
 class SonicPiAPIs;
+class SonicPii18n;
 class SonicPiLog;
 class SonicPiScintilla;
 class SonicPiOSCServer;
@@ -76,15 +78,18 @@ class MainWindow : public QMainWindow
 
     public:
 #if defined(Q_OS_MAC)
-        MainWindow(QApplication &ref, QString language, bool i18n, QMainWindow* splash);
+        MainWindow(QApplication &ref, QMainWindow* splash);
 #else
-        MainWindow(QApplication &ref, QString language, bool i18n, QSplashScreen* splash);
+        MainWindow(QApplication &ref, QSplashScreen* splash);
 #endif
 
         SonicPiOSCServer *sonicPiOSCServer;
         enum {UDP=0, TCP=1};
         bool loaded_workspaces;
         QString hash_salt;
+        QString ui_language;
+
+        static int const EXIT_CODE_RESTART = -123456789;
 
     protected:
         void closeEvent(QCloseEvent *event);
@@ -146,6 +151,7 @@ signals:
         void help();
         void toggleHelpIcon();
         void onExitCleanup();
+        void restartApp();
         void toggleRecording();
         void toggleRecordingOnIcon();
         void changeSystemPreAmp(int val, int silent=0);
@@ -287,8 +293,16 @@ signals:
         std::string workspaceFilename(SonicPiScintilla* text);
         SonicPiScintilla* filenameToWorkspace(std::string filename);
         bool sendOSC(oscpkt::Message m);
+
         //   void initPrefsWindow();
         void initDocsWindow(QString language);
+        void addLangDocsTab();
+        void addSynthDocsTab();
+        void addFXDocsTab();
+        void addSampleDocsTab();
+        void addExamplesDocsTab();
+        void addAutocompleteArgs();
+
         void refreshDocContent();
         void addHelpPage(QListWidget *nameList, struct help_page *helpPages,
                 int len);
@@ -310,9 +324,12 @@ signals:
         void addUniversalCopyShortcuts(QTextEdit *te);
         void updateTranslatedUIText();
 
-  QMenu *liveMenu, *codeMenu, *audioMenu, *displayMenu, *viewMenu, *ioMenu, *ioMidiInMenu, *ioMidiOutMenu, *ioMidiOutChannelMenu, *localIpAddressesMenu, *themeMenu, *scopeKindVisibilityMenu;
+        void restartApp();
+
+        QMenu *liveMenu, *codeMenu, *audioMenu, *displayMenu, *viewMenu, *ioMenu, *ioMidiInMenu, *ioMidiOutMenu, *ioMidiOutChannelMenu, *localIpAddressesMenu, *themeMenu, *scopeKindVisibilityMenu;
 
         SonicPiSettings *piSettings;
+        SonicPii18n *sonicPii18n;
 
         QTcpSocket *clientSock;
         QFuture<void> osc_thread, server_thread;

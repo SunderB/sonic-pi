@@ -1,5 +1,5 @@
 #include "settingswidget.h"
-#include "../utils/lang_list.h"
+#include "utils/sonic_pi_i18n.h"
 
 #include <QSettings>
 #include <QVBoxLayout>
@@ -21,11 +21,13 @@
 /**
  * Default Constructor
  */
-SettingsWidget::SettingsWidget(int port, bool i18n, SonicPiSettings *piSettings, QWidget *parent) {
+SettingsWidget::SettingsWidget(int port, bool i18n, SonicPiSettings *piSettings, SonicPii18n *sonicPii18n, QWidget *parent) {
     this->piSettings = piSettings;
     this->i18n = i18n;
+    this->sonicPii18n = sonicPii18n;
+    this->localeNames = sonicPii18n->getNativeLanguageNameList();
+    this->available_languages = sonicPii18n->getAvailableLanguages();
     server_osc_cues_port = port;
-    defineLocaleLists();
 
     prefTabs = new QTabWidget();
 
@@ -518,7 +520,11 @@ void SettingsWidget::updateScopeKindVisibility() {
     QCheckBox *cb = qobject_cast<QCheckBox*>(scope_box_kinds_layout->itemAt(i)->widget());
     cb->setChecked(piSettings->isScopeActive(cb->text()));
   }
+}
 
+void SettingsWidget::updateSelectedUILanguage(QString lang) {
+  int index = available_languages.indexOf(lang);
+  language_combo->setCurrentIndex(index);
 }
 
 void SettingsWidget::toggleScope( QWidget* qw ) {
@@ -531,7 +537,7 @@ void SettingsWidget::toggleScope( QWidget* qw ) {
 }
 
 void SettingsWidget::updateUILanguage(int index) {
-  QString lang = language_combo_index_to_language_str(index);
+  QString lang = available_languages[index];
   emit uiLanguageChanged(lang);
 }
 
@@ -673,7 +679,7 @@ void SettingsWidget::updateVersionInfo( QString info_string, QString visit, bool
 
 void SettingsWidget::updateSettings() {
     std::cout << "[GUI] - Update Settings" << std::endl;
-    piSettings->language = language_combo_index_to_language_str(language_combo->currentIndex());
+    piSettings->language = available_languages[language_combo->currentIndex()];
     piSettings->mixer_invert_stereo = mixer_invert_stereo->isChecked();
     piSettings->mixer_force_mono = mixer_force_mono->isChecked();
     piSettings->check_args = check_args->isChecked();
@@ -714,8 +720,7 @@ void SettingsWidget::updateSettings() {
 }
 
 void SettingsWidget::settingsChanged() {
-    language_combo->setCurrentIndex(localeIndex[piSettings->language]);
-
+    language_combo->setCurrentIndex(available_languages.indexOf(piSettings->language));
     mixer_invert_stereo->setChecked(piSettings->mixer_invert_stereo);
     mixer_force_mono->setChecked(piSettings->mixer_force_mono);
     check_args->setChecked(piSettings->check_args);
@@ -838,21 +843,17 @@ void SettingsWidget::connectAll() {
 void SettingsWidget::add_language_combo_box_entries(QComboBox* combo) {
   // Add language combo entries
   std::cout << "[Debug] Adding language combo box entries..." << std::endl;
-  std::cout << (std::to_string(static_cast<int>(availableLocales.size()))) << std::endl;
+  std::cout << (std::to_string(static_cast<int>(available_languages.size()))) << std::endl;
 
-  for (auto const &language_entry : availableLocales) {
-    std::cout << "[Debug] Adding language " << language_entry.second.toUtf8().data() << " to the combo box" << std::endl;
-    if (language_entry.second != "system_locale") {
+  for (auto const &language : available_languages) {
+    std::cout << "[Debug] Adding language " << language.toUtf8().data() << " to the combo box" << std::endl;
+    if (language != "system_locale") {
       // Add the language's name to the combo box
-      combo->addItem(localeNames[language_entry.second]);
+      combo->addItem(localeNames[language]);
     } else {
       combo->addItem(tr("Use system language"));
     }
   }
-}
-
-QString SettingsWidget::language_combo_index_to_language_str(int index) {
-  return availableLocales[index];
 }
 
 
