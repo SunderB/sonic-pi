@@ -2,6 +2,7 @@
 #define SETTINGSWIDGET_H
 
 #include "model/settings.h"
+#include "utils/sonic_pi_i18n.h"
 
 #include <QWidget>
 
@@ -23,17 +24,20 @@ class SettingsWidget : public QWidget
     Q_OBJECT
 
 public:
-    SettingsWidget(int server_osc_cues_port, bool i18n, SonicPiSettings *piSettings, QWidget *parent = 0);
+    SettingsWidget(int server_osc_cues_port, bool i18n, SonicPiSettings *piSettings, SonicPii18n *sonicPii18n, QWidget *parent = 0);
     ~SettingsWidget();
 
     void updateVersionInfo( QString info_string, QString visit, bool sonic_pi_net_visible, bool check_now_visible);
     void updateMidiInPorts( QString in );
     void updateMidiOutPorts( QString out );
     void updateScopeNames(std::vector<QString>);
+    void updateSelectedUILanguage(QString lang);
+
+    void updateTranslatedUIText();
+
     QSize sizeHint() const;
 
-    void defineLocaleLists();
-    QString language_combo_index_to_language_str(int index);
+    void updateTranslatedUIText();
 
 private slots:
     void updateUILanguage(int index);
@@ -105,12 +109,11 @@ signals:
 
 private:
     SonicPiSettings* piSettings;
+    SonicPii18n* sonicPii18n;
+    std::map<QString, QString> localeNames;
+    QStringList available_languages;
     bool i18n;
     int server_osc_cues_port;
-
-    std::map<unsigned int, QString> availableLocales;
-    std::map<QString, unsigned int> localeIndex;
-    std::map<QString, QString> localeNames;
 
     QTabWidget *prefTabs;
 
@@ -141,6 +144,7 @@ private:
     QGroupBox *update_box;
     QGroupBox *update_info_box;
 
+    QCheckBox *print_output;
     QCheckBox *mixer_invert_stereo;
     QCheckBox *mixer_force_mono;
     QCheckBox *log_synths;

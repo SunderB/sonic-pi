@@ -9,6 +9,8 @@ project("Sonic Pi"
   HOMEPAGE_URL "https://sonic-pi.net"
     )
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -100,12 +102,15 @@ set(SOURCES
     ${QTAPP_ROOT}/visualizer/server_shm.hpp
     ${QTAPP_ROOT}/main.cpp
     ${QTAPP_ROOT}/utils/sonicpiapis.cpp
+    ${QTAPP_ROOT}/utils/sonic_pi_i18n.cpp
     ${QTAPP_ROOT}/widgets/sonicpilog.cpp
     ${QTAPP_ROOT}/widgets/sonicpilog.h
     ${QTAPP_ROOT}/widgets/sonicpicontext.cpp
     ${QTAPP_ROOT}/widgets/sonicpicontext.h
     ${QTAPP_ROOT}/utils/sonicpiapis.h
+    ${QTAPP_ROOT}/utils/sonic_pi_i18n.h
     ${QTAPP_ROOT}/utils/ruby_help.h
+    ${QTAPP_ROOT}/utils/paths.h
     ${QTAPP_ROOT}/model/settings.h
     )
 

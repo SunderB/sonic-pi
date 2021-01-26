@@ -14,6 +14,8 @@
 #include <Qsci/qsciabstractapis.h>
 #include <QHash>
 
+#ifndef SONIC_PI_APIS_H
+#define SONIC_PI_APIS_H
 class SonicPiAPIs : public QsciAbstractAPIs
 {
  public:
@@ -44,3 +46,4 @@ class SonicPiAPIs : public QsciAbstractAPIs
   QHash<QString, QStringList> fxArgs;
   QHash<QString, QStringList> synthArgs;
 };
+#endif
