@@ -132,7 +132,6 @@ private:
     QGroupBox *automation_box;
     QGroupBox *debug_box;
     QGroupBox *language_box;
-    QLabel *language_option_label;
 
     QGroupBox *viz_box;
     QGroupBox *scope_box;
@@ -195,6 +194,8 @@ private:
     QSlider *gui_transparency_slider;
 
     QComboBox *language_combo;
+    QLabel *language_option_label;
+    QLabel *language_info_label;
 
     // TODO
     QGroupBox* createAudioPrefsTab();
