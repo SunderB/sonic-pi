@@ -390,13 +390,12 @@ QGroupBox* SettingsWidget::createEditorPrefsTab() {
     language_option_label->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
 
     language_info_label = new QLabel;
-    language_info_label->setText(tr("Translations have been generously provided by volunteers"));
-
-    language_option_label->setText(tr("UI & Tutorial Language (Requires a restart to take effect)"));
+    language_info_label->setText(tr("Translations have been generously provided by volunteers \non https://hosted.weblate.org/projects/sonic-pi/. Thank you! :)"));
 
     QVBoxLayout *language_box_layout = new QVBoxLayout;
     language_box_layout->addWidget(language_combo);
     language_box_layout->addWidget(language_option_label);
+    language_box_layout->addWidget(language_info_label);
 
     language_box->setLayout(language_box_layout);
 
