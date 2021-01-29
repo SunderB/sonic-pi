@@ -296,6 +296,7 @@ signals:
 
         //   void initPrefsWindow();
         void initDocsWindow(QString language);
+        void addTutorialDocsTab(QString lang);
         void addLangDocsTab();
         void addSynthDocsTab();
         void addFXDocsTab();
@@ -323,8 +324,6 @@ signals:
 
         void addUniversalCopyShortcuts(QTextEdit *te);
         void updateTranslatedUIText();
-
-        void restartApp();
 
         QMenu *liveMenu, *codeMenu, *audioMenu, *displayMenu, *viewMenu, *ioMenu, *ioMidiInMenu, *ioMidiOutMenu, *ioMidiOutChannelMenu, *localIpAddressesMenu, *themeMenu, *scopeKindVisibilityMenu;
 

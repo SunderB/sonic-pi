@@ -20,13 +20,16 @@
 class SonicPii18n : public QObject {
 public:
   SonicPii18n(QString rootpath);
+  ~SonicPii18n();
 
 public slots:
   QString determineUILanguage(QString lang_pref);
   QStringList getAvailableLanguages();
-  static std::map<QString, QString> getLanguageNameList();
-  static QString getNativeLanguageName(QString lang);
+  std::map<QString, QString> getNativeLanguageNameList();
+  QString getNativeLanguageName(QString lang);
   bool loadTranslations(QString lang);
+  
+  bool system_language_available;
 
 private:
   QString root_path;
@@ -36,7 +39,5 @@ private:
   static std::map<QString, QString> native_language_names;
 
   QStringList findAvailableLanguages();
-
-
 };
 #endif

@@ -1955,39 +1955,41 @@ void MainWindow::changeSystemPreAmp(int val, int silent)
     statusBar()->showMessage(tr("Updating System Volume..."), 2000);
 }
 
+// TODO: Implement real-time language switching
 void MainWindow::changeUILanguage(QString lang) {
     if (lang != piSettings->language) {
-      std::cout << "New language selected: " << lang.toUtf8().constData() << std::endl;
-      QString old_lang = sonicPii18n->getNativeLanguageName(piSettings->language);
-      QString new_lang = sonicPii18n->getNativeLanguageName(lang);
+        std::cout << "Current language:  " << piSettings->language.toUtf8().constData() << std::endl;
+        std::cout << "New language selected: " << lang.toUtf8().constData() << std::endl;
+        QString old_lang = sonicPii18n->getNativeLanguageName(piSettings->language);
+        QString new_lang = sonicPii18n->getNativeLanguageName(lang);
 
-      // Load new language
-      //QString language = sonicPii18n->determineUILanguage(lang);
-      //sonicPii18n->loadTranslations(language);
-      //QString title_new = tr("Updated the UI language from %s to %s").arg();
+        // Load new language
+        //QString language = sonicPii18n->determineUILanguage(lang);
+        //sonicPii18n->loadTranslations(language);
+        //QString title_new = tr("Updated the UI language from %s to %s").arg();
 
-      QMessageBox msgBox(this);
-      msgBox.setText(tr("You've selected a new language: %s").arg(new_lang));
-      msgBox.setInformativeText(tr("Do you want to apply these new settings?\nApplying the new language will restart Sonic Pi."));
-      QPushButton *restartButton = msgBox.addButton(tr("Apply & Restart"), QMessageBox::ActionRole);
-      QPushButton *dismissButton = msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
-      msgBox.setDefaultButton(restartButton);
-      msgBox.setIcon(QMessageBox::Information);
-      msgBox.exec();
+        QMessageBox msgBox(this);
+        msgBox.setText(QString(tr("You've selected a new language: %1")).arg(new_lang));
+        msgBox.setInformativeText(tr("Do you want to apply this language?\nApplying the new language will restart Sonic Pi."));
+        QPushButton *restartButton = msgBox.addButton(tr("Apply and Restart"), QMessageBox::ActionRole);
+        QPushButton *dismissButton = msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
+        msgBox.setDefaultButton(restartButton);
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
 
-      if (msgBox.clickedButton() == (QAbstractButton*)restartButton) {
-          piSettings->language = lang;
-          writeSettings();
-          restartApp();
-          //statusBar()->showMessage(tr("Updated UI language setting, please restart Sonic Pi to apply it"), 2000);
-      } else if (msgBox.clickedButton() == (QAbstractButton*)dismissButton) {
-          settingsWidget->updateSelectedUILanguage(piSettings->language);
-      }
+        if (msgBox.clickedButton() == (QAbstractButton*)restartButton) {
+            piSettings->language = lang;
+            writeSettings();
+            restartApp();
+            //statusBar()->showMessage(tr("Updated UI language setting, please restart Sonic Pi to apply it"), 2000);
+        } else if (msgBox.clickedButton() == (QAbstractButton*)dismissButton) {
+            // Don't apply the new language settings
+            settingsWidget->updateSelectedUILanguage(piSettings->language);
+        }
 
-      // Load previously set language
-      //sonicPii18n->loadTranslations(ui_language);
+        // Load previously set language
+        //sonicPii18n->loadTranslations(ui_language);
     }
-
 }
 
 
@@ -3927,6 +3929,8 @@ void MainWindow::updateContext(int line, int index){
 
 }
 
+// TODO: Implement real-time language switching
+// This is currently unused, but put in place to aid in implementing real-time language switching in the future
 void MainWindow::updateTranslatedUIText() {
   // Widget titles
   prefsWidget->setWindowTitle(tr("Preferences"));
