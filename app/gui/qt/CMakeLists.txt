@@ -110,6 +110,7 @@ set(SOURCES
     ${QTAPP_ROOT}/utils/sonicpiapis.h
     ${QTAPP_ROOT}/utils/sonic_pi_i18n.h
     ${QTAPP_ROOT}/utils/ruby_help.h
+    ${QTAPP_ROOT}/utils/lang_list.h
     ${QTAPP_ROOT}/utils/paths.h
     ${QTAPP_ROOT}/model/settings.h
     )
