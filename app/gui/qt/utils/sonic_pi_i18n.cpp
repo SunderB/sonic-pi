@@ -2,9 +2,7 @@
 #include <QString>
 #include <QStringList>
 #include <QLocale>
-#include <QLanguage>
 #include <QTranslator>
-#include <QMainWindow>
 #include <QApplication>
 #include <QLibraryInfo>
 
@@ -16,11 +14,29 @@
 SonicPii18n::SonicPii18n(QString rootpath) {
   this->root_path = rootpath;
   this->available_languages = findAvailableLanguages();
+  // Set to true unless we can't load the system language
+  this->system_language_available = true;
+
+  // // Print all Qt's language codes for debugging
+  // QList<QLocale> allLocales = QLocale::matchingLocales(
+  //           QLocale::AnyLanguage,
+  //           QLocale::AnyScript,
+  //           QLocale::AnyCountry);
+  // QStringList iso639LanguageCodes;
+  //
+  // for(const QLocale &locale : allLocales) {
+  //     iso639LanguageCodes << locale.name();
+  // }
+  //
+  // std::cout << iso639LanguageCodes.join("\n").toUtf8().constData() << std::endl;
+}
+
+SonicPii18n::~SonicPii18n() {
 }
 
 QString SonicPii18n::determineUILanguage(QString lang_pref) {
   QStringList available_languages = getAvailableLanguages();
-  std::cout << available_languages.join("\n").toUtf8().constData() << '\n';
+  std::cout << available_languages.join("\n").toUtf8().constData() << std::endl;
   QLocale locale;
 
   if (lang_pref != "system_locale") {
@@ -34,7 +50,7 @@ QString SonicPii18n::determineUILanguage(QString lang_pref) {
     general_name.truncate(general_name.lastIndexOf('-'));
 
     if (available_languages.contains(general_name)) {
-        return lang_pref;
+        return general_name;
     }
   } else {
     QStringList preferred_languages = locale.uiLanguages();
@@ -42,14 +58,20 @@ QString SonicPii18n::determineUILanguage(QString lang_pref) {
       // ...run through the list of preferred languages
     std::cout << "Looping through preferred ui languages" << std::endl;
 
+    QString l;
     for (int i = 0; i < preferred_languages.length(); i += 1) {
-      if (available_languages.contains(preferred_languages[i])) {
-          return lang_pref;
+      l = preferred_languages[i];
+      l.replace("-", "_");
+
+      std::cout << preferred_languages[i].toUtf8().constData() << std::endl;
+      if (available_languages.contains(l)) {
+          return l;
       }
     }
   }
 
-  // Fallback to English
+  // Fpreferred_languages[i]preferred_languages[i]preferred_languages[i]allback to English
+  this->system_language_available = false;
   return "en";
 }
 
@@ -65,12 +87,16 @@ QStringList SonicPii18n::findAvailableLanguages() {
   for (int i = 0; i < fileNames.size(); ++i) {
     // get locale extracted by filename
     QString locale;
-    locale = fileNames[i]; // "TranslationExample_de.qm"
-    locale.truncate(locale.lastIndexOf('.')); // "TranslationExample_de"
-    locale.remove(0, locale.lastIndexOf("sonic-pi_") + 9); // "de"
+    locale = fileNames[i]; // "sonic-pi_pt_BR.qm"
+    locale.truncate(locale.lastIndexOf('.')); // "sonic-pi_pt_BR"
+    locale.remove(0, locale.lastIndexOf("sonic-pi_") + 9); // "pt_BR"
+    //locale.replace("_", "-"); // Replace underscores with dashes so it matches the language codes e.g: "pt-BR"
     std::cout << locale.toUtf8().constData() << '\n';
     languages << locale;
   }
+  // Add the source language
+  languages << "en_GB";
+  languages.sort();
   return languages;
 }
 
@@ -99,25 +125,29 @@ bool SonicPii18n::loadTranslations(QString lang) {
 }
 
 QStringList SonicPii18n::getAvailableLanguages() {
-  return self->available_languages;
+  return this->available_languages;
 }
 
-static std::map<QString, QString> SonicPii18n::getLanguageNameList() {
-  return self->native_language_names;
+std::map<QString, QString> SonicPii18n::getNativeLanguageNameList() {
+  return native_language_names;
 }
 
-static QString SonicPii18n::getNativeLanguageName(QString lang) {
-  if (native_language_names.contains(lang))
-    return self->native_language_names[lang];
-  else if (lang == "system_locale") {
-    return tr("System language")
+QString SonicPii18n::getNativeLanguageName(QString lang) {
+  std::map<QString, QString>::iterator it = native_language_names.find(lang);
+  if(it != native_language_names.end()) {
+    // language found
+    return native_language_names[lang];
+  } else if (lang == "system_locale") {
+    return tr("System language");
   } else {
+    std::cout << "Warning: Predefined language name not found'" << lang.toUtf8().constData() << "'" << std::endl;
     // Try using QLocale to find the native language name
     QLocale locale(lang);
-    if (locale.language != QLanguage::C) {
+    QString name = locale.nativeLanguageName();
+    if (name != "C" && name != "") {
       return locale.nativeLanguageName();
     } else {
-      std::cout << "Warning: Invalid language code '" << lang.toUtf8().constData() << "'" << std:endl;
+      std::cout << "Warning: Invalid language code '" << lang.toUtf8().constData() << "'" << std::endl;
       return lang;
     }
   }

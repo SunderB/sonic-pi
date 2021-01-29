@@ -27,6 +27,7 @@ SettingsWidget::SettingsWidget(int port, bool i18n, SonicPiSettings *piSettings,
     this->sonicPii18n = sonicPii18n;
     this->localeNames = sonicPii18n->getNativeLanguageNameList();
     this->available_languages = sonicPii18n->getAvailableLanguages();
+    available_languages.prepend("system_locale");
     server_osc_cues_port = port;
 
     prefTabs = new QTabWidget();
@@ -49,7 +50,7 @@ SettingsWidget::SettingsWidget(int port, bool i18n, SonicPiSettings *piSettings,
     QGroupBox *update_prefs_box = createUpdatePrefsTab();
     prefTabs->addTab(update_prefs_box, tr("Updates"));
 
-    if (!i18n) {
+    if (!sonicPii18n->system_language_available) {
         QGroupBox *translation_box = new QGroupBox("Translation");
         QVBoxLayout *translation_box_layout = new QVBoxLayout;
         QLabel *go_translate = new QLabel;
@@ -59,7 +60,7 @@ SettingsWidget::SettingsWidget(int port, bool i18n, SonicPiSettings *piSettings,
                 QLocale::languageToString(QLocale::system().language()) +
                 " yet.<br/>" +
                 "We rely on crowdsourcing to help create and maintain translations.<br/>" +
-                "<a href=\"https://github.com/samaaron/sonic-pi/blob/main/TRANSLATION.md\">" +
+                "<a href=\"https://github.com/sonic-pi-net/sonic-pi/blob/main/TRANSLATION.md\">" +
                 "Please consider helping to translate Sonic Pi to your language.</a> "
                 );
         go_translate->setTextFormat(Qt::RichText);
@@ -388,6 +389,11 @@ QGroupBox* SettingsWidget::createEditorPrefsTab() {
     language_option_label->setText(tr("UI & Tutorial Language (Requires a restart to take effect)"));
     language_option_label->setToolTip(tr("Change the language of the UI & Tutorial (Requires a restart to take effect)"));
 
+    language_info_label = new QLabel;
+    language_info_label->setText(tr("Translations have been generously provided by volunteers"));
+
+    language_option_label->setText(tr("UI & Tutorial Language (Requires a restart to take effect)"));
+
     QVBoxLayout *language_box_layout = new QVBoxLayout;
     language_box_layout->addWidget(language_combo);
     language_box_layout->addWidget(language_option_label);
@@ -398,7 +404,7 @@ QGroupBox* SettingsWidget::createEditorPrefsTab() {
     gridEditorPrefs->addWidget(editor_look_feel_box, 0, 1);
     gridEditorPrefs->addWidget(automation_box, 1, 1);
     gridEditorPrefs->addWidget(debug_box, 1, 0);
-    gridEditorPrefs->addWidget(language_box, 2, 0);
+    gridEditorPrefs->addWidget(language_box, 2, 0, 1, 2);
 
     editor_box->setLayout(gridEditorPrefs);
     return editor_box;
@@ -538,6 +544,7 @@ void SettingsWidget::toggleScope( QWidget* qw ) {
 
 void SettingsWidget::updateUILanguage(int index) {
   QString lang = available_languages[index];
+  std::cout << "Changed language to " << lang.toUtf8().constData() << std::endl;
   emit uiLanguageChanged(lang);
 }
 
@@ -763,7 +770,7 @@ void SettingsWidget::settingsChanged() {
 }
 
 void SettingsWidget::connectAll() {
-    connect(language_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSettings()));
+    //connect(language_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSettings()));
     connect(language_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateUILanguage(int)));
     connect(mixer_invert_stereo, SIGNAL(clicked()), this, SLOT(updateSettings()));
     connect(mixer_force_mono, SIGNAL(clicked()), this, SLOT(updateSettings()));
@@ -849,22 +856,15 @@ void SettingsWidget::add_language_combo_box_entries(QComboBox* combo) {
     std::cout << "[Debug] Adding language " << language.toUtf8().data() << " to the combo box" << std::endl;
     if (language != "system_locale") {
       // Add the language's name to the combo box
-      combo->addItem(localeNames[language]);
+      combo->addItem(sonicPii18n->getNativeLanguageName(language));
     } else {
       combo->addItem(tr("Use system language"));
     }
   }
 }
 
-
-//
-//
-//
-//
-//
-
-
-
+// TODO: Implement real-time language switching
+// This is currently unused, but put in place aid implementing real-time language switching in the future
 void SettingsWidget::updateTranslatedUIText() {
   /**
   * IO Tab

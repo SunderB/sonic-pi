@@ -27,38 +27,23 @@ require_relative "../lib/sonicpi/lang/midi"
 
 require 'active_support/inflector'
 
-
 include SonicPi::Util
 
-# Clear all the folders
-FileUtils::rm_rf "#{qt_gui_path}/help/"
-FileUtils::mkdir "#{qt_gui_path}/help/"
-
-FileUtils::rm_rf "#{qt_gui_path}/info/"
-FileUtils::mkdir "#{qt_gui_path}/info/"
-
-FileUtils::rm_rf "#{qt_gui_path}/book/"
-FileUtils::mkdir "#{qt_gui_path}/book/"
-
-# Copy images for tutorial
-FileUtils::cp_r("#{etc_path}/doc/images", "#{qt_gui_path}/help/")
-
 # List of all languages with GUI translation files
-# Commented out languages currently have no translated strings
 @lang_names = Hash[
   "bg" => "български", # Bulgarian
-  #"bn" => "বাংলা", # Bengali/Bangla
+  "bn" => "বাংলা", # Bengali/Bangla
   "bs" => "Bosanski/босански", # Bosnian
   "ca" => "Català", # Catalan
-  #"ca@valencia" => "Valencià", # Valencian
+  "ca@valencia" => "Valencià", # Valencian
   "cs" => "Čeština", # Czech
   "da" => "Dansk", # Danish
   "de" => "Deutsch", # German
   "el" => "ελληνικά", # Greek
-  #"en-AU" => "English (Australian)", # English (Australian)
-  "en-GB" => "English (UK)", # English (UK) - default language
-  "en-US" => "English (US)", # English (US)
-  #"eo" => "Esperanto", # Esperanto
+  "en_AU" => "English (Australian)", # English (Australian)
+  "en_GB" => "English (UK)", # English (UK) - default language
+  "en_US" => "English (US)", # English (US)
+  "eo" => "Esperanto", # Esperanto
   "es" => "Español", # Spanish
   "et" => "Eesti keel", # Estonian
   "fa" => "فارسی", # Persian
@@ -80,7 +65,7 @@ FileUtils::cp_r("#{etc_path}/doc/images", "#{qt_gui_path}/help/")
   "nl" => "Nederlands", # Dutch (Netherlands)
   "pl" => "Polski", # Polish
   "pt" => "Português", # Portuguese
-  "pt-BR" => "Português do Brasil", # Brazilian Portuguese
+  "pt_BR" => "Português do Brasil", # Brazilian Portuguese
   "ro" => "Română", # Romanian
   "ru" => "Pусский", # Russian
   "si" => "සිංහල", # Sinhala/Sinhalese
@@ -88,16 +73,29 @@ FileUtils::cp_r("#{etc_path}/doc/images", "#{qt_gui_path}/help/")
   "sl" => "Slovenščina",#/Slovenski Jezik", # Slovenian
   "sv" => "Svenska", # Swedish
   "sw" => "Kiswahili", # Swahili
-  "ti" => "ไทย", # Thai
+  "th" => "ไทย", # Thai
   "tr" => "Türkçe", # Turkish
   "ug" => "ئۇيغۇر تىلى", # Uyghur
   "uk" => "Українська", # Ukranian
   "vi" => "Tiếng Việt", # Vietnamese
-  "zh" => "繁體中文", # Mandarin Chinese (Traditional)
-  "zh-Hans" => "简体中文", # Mandarin Chinese (Simplified)
-  "zh-Hk" => "廣東話", # Cantonese
-  "zh-TW" => "臺灣華語" # Taiwanese Mandarin
+  "zh" => "简体中文", # Mandarin Chinese (Simplified)
+  "zh_Hans" => "简体中文", # Mandarin Chinese (Simplified)
+  "zh_HK" => "廣東話", # Mandarin Chinese (Traditional, Hong Kong)
+  "zh_TW" => "臺灣華語" # Mandarin Chinese (Traditional, Taiwan)
 ]
+
+# Clear all the folders
+FileUtils::rm_rf "#{qt_gui_path}/help/"
+FileUtils::mkdir "#{qt_gui_path}/help/"
+
+FileUtils::rm_rf "#{qt_gui_path}/info/"
+FileUtils::mkdir "#{qt_gui_path}/info/"
+
+FileUtils::rm_rf "#{qt_gui_path}/book/"
+FileUtils::mkdir "#{qt_gui_path}/book/"
+
+# Copy images for tutorial
+FileUtils::cp_r("#{etc_path}/doc/images", "#{qt_gui_path}/help/")
 
 #docs = []
 @filenames = []
@@ -529,7 +527,6 @@ File.open("#{qt_gui_path}/help_files.qrc", 'w') do |f|
   f << "  </qresource>\n</RCC>\n"
 end
 
-
 ###
 # Generate info pages
 ###
@@ -559,5 +556,6 @@ info_sources.each do |src|
   end
 
 end
+
 
 generate_ui_lang_names()

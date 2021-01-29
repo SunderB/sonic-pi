@@ -18,8 +18,6 @@
 #include <QPixmap>
 #include <QBitmap>
 #include <QLabel>
-#include <QTranslator>
-#include <QSettings>
 #include <QLibraryInfo>
 
 #include "mainwindow.h"
