@@ -25,6 +25,9 @@ namespace SonicPi
 OscSender::OscSender(int port)
 {
     this->port = port;
+    
+    int intlen = sizeof(int);
+    getsockopt(port, SOL_SOCKET, SO_MAX_MSG_SIZE, (int *)&this->max_packet_size, &intlen);
 }
 
 bool OscSender::sendOSC(Message m)
@@ -41,7 +44,16 @@ bool OscSender::sendOSC(Message m)
     {
         PacketWriter pw;
         pw.addMessage(m);
-        return sock.sendPacket(pw.packetData(), pw.packetSize());
+        // Check that the message size isn't bigger than the max package
+        if (pw.packetSize() > this->max_packet_size)
+        {
+            LOG(ERR, "[OSC Sender] - Packet size exceeds the maximpum UDP packet size for port " << port);
+            return false;
+        }
+        else 
+        {
+            return sock.sendPacket(pw.packetData(), pw.packetSize());
+        }
     }
 }
 
