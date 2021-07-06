@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Sonic Pi - Info - Sonic Pi Documentation (en)</title>
+  <link rel="stylesheet" type="text/css" href="http://127.0.0.1:4000/assets/css/layout.css">
+
+  <link rel="stylesheet" type="text/css" id="css-theme-light" href="http://127.0.0.1:4000/assets/css/light/doc-styles.css">
+  <link rel="stylesheet" disabled="true" type="text/css" id="css-theme-dark" href="http://127.0.0.1:4000/assets/css/dark/doc-styles.css">
+  <link rel="stylesheet" disabled="true" type="text/css" id="css-theme-high_contrast" href="http://127.0.0.1:4000/assets/css/high_contrast/doc-styles.css">
+
+  <script type="text/javascript" src="http://127.0.0.1:4000/assets/js/lang_switcher.js"></script>
+  <script type="text/javascript" src="http://127.0.0.1:4000/assets/js/theme_switcher.js"></script>
+  <script type="text/javascript" src="http://127.0.0.1:4000/assets/js/accordion.js"></script>
+</head>
+
+<body class="manual">
+  <div class="index">
+    
+      
+      <div class="toc">
+<div id="tutorial" class="tabcontent section_toc tutorial">
+<ul class="section_toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/01-Welcome-to-Sonic-Pi.html">1 Welcome to Sonic Pi</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/01.1-Live-Coding.html">   1.1 Live Coding</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/01.2-Exploring-the-Interface.html">   1.2 Exploring the Interface</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/01.3-Learning-through-Play.html">   1.3 Learning through Play</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/02-Synths.html">2 Synths</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/02.1-Your-First-Beeps.html">   2.1 Your First Beeps</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/02.2-Synth-Params.html">   2.2 Synth Options</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/02.3-Switching-Synths.html">   2.3 Switching Synths</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/02.4-Durations-with-Envelopes.html">   2.4 Duration with Envelopes</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/03-Samples.html">3 Samples</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/03.1-Triggering-Samples.html">   3.1 Triggering Samples</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/03.2-Sample-Params.html">   3.2 Sample Parameters</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/03.3-Stretching-Samples.html">   3.3 Stretching Samples</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/03.4-Enveloped-Samples.html">   3.4 Enveloped Samples</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/03.5-Partial-Samples.html">   3.5 Partial Samples</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/03.6-External-Samples.html">   3.6 External Samples</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/03.7-Sample-Packs.html">   3.7 Sample Packs</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/04-Randomisation.html">4 Randomisation</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/05-Programming-Structures.html">5 Programming Structures</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/05.1-Blocks.html">   5.1 Blocks</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/05.2-Iteration-and-Loops.html">   5.2 Iteration and Loops</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/05.3-Conditionals.html">   5.3 Conditionals</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/05.4-Threads.html">   5.4 Threads</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/05.5-Functions.html">   5.5 Functions</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/05.6-Variables.html">   5.6 Variables</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/05.7-Thread-Synchronisation.html">   5.7 Thread Synchronisation</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/06-FX.html">6 FX</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/06.1-Adding-FX.html">   6.1 Adding FX</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/06.2-FX-in-Practice.html">   6.2 FX in Practice</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/07-Control.html">7 Control</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/07.1-Controlling-Running-Synths.html">   7.1 Controlling Running Synths</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/07.2-Controlling-FX.html">   7.2 Controlling FX</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/07.3-Sliding-Parameters.html">   7.3 Sliding Options</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/08-Data-Structures.html">8 Data Structures</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/08.1-Lists.html">   8.1 Lists</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/08.2-Chords.html">   8.2 Chords</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/08.3-Scales.html">   8.3 Scales</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/08.4-Rings.html">   8.4 Rings</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/08.5-Ring-Chains.html">   8.5 Ring Chains</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/09-Live-Coding.html">9 Live Coding</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/09.1-Live-Coding-Fundamentals.html">   9.1 Live Coding Fundamentals</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/09.2-Live-Loops.html">   9.2 Live Loops</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/09.3-Multiple-Live-Loops.html">   9.3 Multiple Live Loops</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/09.4-Ticking.html">   9.4 Ticking</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/10-State.html">10 Time State</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/10.1-Set-and-Get.html">   10.1 Set and Get</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/10.2-Sync.html">   10.2 Sync</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/10.3-Pattern-Matching.html">   10.3 Pattern Matching</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/11-MIDI.html">11 MIDI</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/11.1-MIDI-In.html">   11.1 MIDI In</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/11.2-MIDI-Out.html">   11.2 MIDI Out</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/12-OSC.html">12 OSC</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/12.1-Receiving-OSC.html">   12.1 Receiving OSC</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/12.2-Sending-OSC.html">   12.2 Sending OSC</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/13-Multichannel-Audio.html">13 Multichannel Audio</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/13.1-Sound-In.html">   13.1 Sound In</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/13.2-Live-Audio.html">   13.2 Live Audio</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/13.3-Sound-Out.html">   13.3 Sound Out</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/14-Conclusions.html">14 Conclusions</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A-Articles.html">A Appendix A - MagPi Articles</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/A.01-tips.html">   A.1 Tips for Sonic Pi</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.02-live-coding.html">   A.2 Live Coding</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.03-coded-beats.html">   A.3 Coded Beats</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.04-synth-riffs.html">   A.4 Synth Riffs</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.05-acid-bass.html">   A.5 Acid Bass</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.06-minecraft.html">   A.6 Musical Minecraft</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.07-bizet.html">   A.7 Bizet Beats</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.08-minecraft-vj.html">   A.8 Become a Minecraft VJ</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.09-randomisation.html">   A.9 Randomisation</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.10-controlling-your-sound.html">   A.10 Control</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.11-beat-tracking.html">   A.11 Tick Tock</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.12-sample-slicing.html">   A.12 Sample Slicing</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.13-probabilistic-sequencer.html">   A.13 Code a Probabilistic Sequencer</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.14-amplitude-modulation.html">   A.14 Amplitude Modulation</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.15-performance.html">   A.15 Five Live Coding Techniques</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.16-practice.html">   A.16 How to Practice Live Coding</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.17-sample-stretching.html">   A.17 Sample Stretching</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.18-additive-synthesis.html">   A.18 Sound Design - Additive Synthesis</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.19-subtractive-synthesis.html">   A.19 Sound Design - Subtractive Synthesis</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/A.20-creative-coding-in-the-classroom.html">   A.20 Creative coding in the classroom with Sonic Pi</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/B-Essential-Knowledge.html">B Essential Knowledge</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/B.01-Using-Shortcuts.html">   B.1 Using Shortcuts</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/B.02-Shortcut-Cheatsheet.html">   B.2 Shortcut Cheatsheet</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/B.03-Sharing.html">   B.3 Sharing</a></li><li><a href="http://127.0.0.1:4000/en/tutorial/B.04-Performing.html">   B.4 Performing</a></li></ul>
+<li><a href="http://127.0.0.1:4000/en/tutorial/C-Minecraft-Pi.html">C Minecraft Pi</a></li><ul class="toc_list">
+<li><a href="http://127.0.0.1:4000/en/tutorial/C.01-Basic-API.html">   C.1 Basic API</a></li></ul>
+</ul>
+</div>
+<div id="synths" class="tabcontent section_toc synths">
+<ul class="section_toc_list">
+<li><a href="http://127.0.0.1:4000/en/reference/synths/beep.html">Beep</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/blade.html">Blade</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/bnoise.html">Bnoise</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/chipbass.html">Chipbass</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/chiplead.html">Chiplead</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/chipnoise.html">Chipnoise</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/cnoise.html">Cnoise</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/dark_ambience.html">Dark Ambience</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/dpulse.html">Dpulse</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/dsaw.html">Dsaw</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/dtri.html">Dtri</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/dull_bell.html">Dull Bell</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/fm.html">Fm</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/gnoise.html">Gnoise</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/growl.html">Growl</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/hollow.html">Hollow</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/hoover.html">Hoover</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/kalimba.html">Kalimba</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/mod_dsaw.html">Mod Dsaw</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/mod_fm.html">Mod Fm</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/mod_pulse.html">Mod Pulse</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/mod_saw.html">Mod Saw</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/mod_sine.html">Mod Sine</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/mod_tri.html">Mod Tri</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/noise.html">Noise</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/piano.html">Piano</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/pluck.html">Pluck</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/pnoise.html">Pnoise</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/pretty_bell.html">Pretty Bell</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/prophet.html">Prophet</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/pulse.html">Pulse</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/rodeo.html">Rodeo</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/saw.html">Saw</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/sound_in.html">Sound In</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/sound_in_stereo.html">Sound In Stereo</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/square.html">Square</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/subpulse.html">Subpulse</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/supersaw.html">Supersaw</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/tb303.html">Tb303</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/tech_saws.html">Tech Saws</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/tri.html">Tri</a></li><li><a href="http://127.0.0.1:4000/en/reference/synths/zawa.html">Zawa</a></li></ul>
+</div>
+<div id="fx" class="tabcontent section_toc fx">
+<ul class="section_toc_list">
+<li><a href="http://127.0.0.1:4000/en/reference/fx/autotuner.html">Autotuner</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/band_eq.html">Band EQ Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/bitcrusher.html">Bitcrusher</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/bpf.html">Band Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/compressor.html">Compressor</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/distortion.html">Distortion</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/echo.html">Echo</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/eq.html">EQ</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/flanger.html">Flanger</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/gverb.html">GVerb</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/hpf.html">High Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/ixi_techno.html">Techno from IXI Lang</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/krush.html">krush</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/level.html">Level Amplifier</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/lpf.html">Low Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/mono.html">Mono</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/nbpf.html">Normalised Band Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/nhpf.html">Normalised High Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/nlpf.html">Normalised Low Pass Filter.</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/normaliser.html">Normaliser</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/nrbpf.html">Normalised Resonant Band Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/nrhpf.html">Normalised Resonant High Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/nrlpf.html">Normalised Resonant Low Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/octaver.html">Octaver</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/pan.html">Pan</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/panslicer.html">Pan Slicer</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/ping_pong.html">Ping Pong Echo</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/pitch_shift.html">Pitch shift</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/rbpf.html">Resonant Band Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/record.html">Record</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/reverb.html">Reverb</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/rhpf.html">Resonant High Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/ring_mod.html">Ring Modulator</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/rlpf.html">Resonant Low Pass Filter</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/slicer.html">Slicer</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/sound_out.html">Sound Out</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/sound_out_stereo.html">Sound Out Stereo</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/tanh.html">Hyperbolic Tangent</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/tremolo.html">Tremolo</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/vowel.html">Vowel</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/whammy.html">Whammy</a></li><li><a href="http://127.0.0.1:4000/en/reference/fx/wobble.html">Wobble</a></li></ul>
+</div>
+<div id="samples" class="tabcontent section_toc samples">
+<ul class="section_toc_list">
+<li><a href="http://127.0.0.1:4000/en/reference/samples/ambi.html">Ambient Sounds</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/bass.html">Bass Sounds</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/bd.html">Bass Drums</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/drum.html">Drum Sounds</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/elec.html">Electric Sounds</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/glitch.html">Glitchy Sounds</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/guit.html">Sounds featuring guitars</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/loop.html">Sounds for Looping</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/mehackit.html">Mehackit Sounds</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/misc.html">Miscellaneous Sounds</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/perc.html">Percussive Sounds</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/sn.html">Snare Drums</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/tabla.html">Sounds of a Tabla Drum</a></li><li><a href="http://127.0.0.1:4000/en/reference/samples/vinyl.html">Vinyl sounds</a></li></ul>
+</div>
+<div id="lang" class="tabcontent section_toc lang">
+<ul class="section_toc_list">
+<li><a href="http://127.0.0.1:4000/en/reference/lang/all_sample_names.html">all_sample_names</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/assert.html">assert</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/assert_equal.html">assert_equal</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/assert_error.html">assert_error</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/assert_not.html">assert_not</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/assert_not_equal.html">assert_not_equal</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/assert_similar.html">assert_similar</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/at.html">at</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/beat.html">beat</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/block_duration.html">block_duration</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/block_slept%3F.html">block_slept?</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/bools.html">bools</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/bt.html">bt</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/buffer.html">buffer</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/choose.html">choose</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/chord.html">chord</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/chord_degree.html">chord_degree</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/chord_invert.html">chord_invert</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/chord_names.html">chord_names</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/clear.html">clear</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/comment.html">comment</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/control.html">control</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/cue.html">cue</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_arg_checks.html">current_arg_checks</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_beat_duration.html">current_beat_duration</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_bpm.html">current_bpm</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_cent_tuning.html">current_cent_tuning</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_debug.html">current_debug</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_midi_defaults.html">current_midi_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_octave.html">current_octave</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_random_seed.html">current_random_seed</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_sample_defaults.html">current_sample_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_sched_ahead_time.html">current_sched_ahead_time</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_synth.html">current_synth</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_synth_defaults.html">current_synth_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_time.html">current_time</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_transpose.html">current_transpose</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/current_volume.html">current_volume</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/dec.html">dec</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/define.html">define</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/defonce.html">defonce</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/degree.html">degree</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/density.html">density</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/dice.html">dice</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/doubles.html">doubles</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/eval_file.html">eval_file</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/factor%3F.html">factor?</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/fx_names.html">fx_names</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/get.html">get</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/halves.html">halves</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/hz_to_midi.html">hz_to_midi</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/in_thread.html">in_thread</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/inc.html">inc</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/kill.html">kill</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/knit.html">knit</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/line.html">line</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/live_audio.html">live_audio</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/live_loop.html">live_loop</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/load_buffer.html">load_buffer</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/load_example.html">load_example</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/load_sample.html">load_sample</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/load_samples.html">load_samples</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/load_synthdefs.html">load_synthdefs</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/look.html">look</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/loop.html">loop</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/map.html">map</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_block_id.html">mc_block_id</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_block_ids.html">mc_block_ids</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_block_name.html">mc_block_name</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_block_names.html">mc_block_names</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_camera_fixed.html">mc_camera_fixed</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_camera_normal.html">mc_camera_normal</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_camera_set_location.html">mc_camera_set_location</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_camera_third_person.html">mc_camera_third_person</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_chat_post.html">mc_chat_post</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_checkpoint_restore.html">mc_checkpoint_restore</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_checkpoint_save.html">mc_checkpoint_save</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_get_block.html">mc_get_block</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_get_height.html">mc_get_height</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_get_pos.html">mc_get_pos</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_get_tile.html">mc_get_tile</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_ground_height.html">mc_ground_height</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_location.html">mc_location</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_message.html">mc_message</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_set_area.html">mc_set_area</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_set_block.html">mc_set_block</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_set_pos.html">mc_set_pos</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_set_tile.html">mc_set_tile</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_surface_teleport.html">mc_surface_teleport</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/mc_teleport.html">mc_teleport</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi.html">midi</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_all_notes_off.html">midi_all_notes_off</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_cc.html">midi_cc</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_channel_pressure.html">midi_channel_pressure</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_clock_beat.html">midi_clock_beat</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_clock_tick.html">midi_clock_tick</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_continue.html">midi_continue</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_local_control_off.html">midi_local_control_off</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_local_control_on.html">midi_local_control_on</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_mode.html">midi_mode</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_note_off.html">midi_note_off</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_note_on.html">midi_note_on</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_notes.html">midi_notes</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_pc.html">midi_pc</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_pitch_bend.html">midi_pitch_bend</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_poly_pressure.html">midi_poly_pressure</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_raw.html">midi_raw</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_reset.html">midi_reset</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_sound_off.html">midi_sound_off</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_start.html">midi_start</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_stop.html">midi_stop</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_sysex.html">midi_sysex</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/midi_to_hz.html">midi_to_hz</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/ndefine.html">ndefine</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/note.html">note</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/note_info.html">note_info</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/note_range.html">note_range</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/octs.html">octs</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/on.html">on</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/one_in.html">one_in</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/osc.html">osc</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/osc_send.html">osc_send</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/pick.html">pick</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/pitch_to_ratio.html">pitch_to_ratio</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/play.html">play</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/play_chord.html">play_chord</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/play_pattern.html">play_pattern</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/play_pattern_timed.html">play_pattern_timed</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/print.html">print</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/puts.html">puts</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/quantise.html">quantise</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/ramp.html">ramp</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rand.html">rand</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rand_back.html">rand_back</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rand_i.html">rand_i</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rand_i_look.html">rand_i_look</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rand_look.html">rand_look</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rand_reset.html">rand_reset</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rand_skip.html">rand_skip</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/range.html">range</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/ratio_to_pitch.html">ratio_to_pitch</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rdist.html">rdist</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/reset.html">reset</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/reset_mixer!.html">reset_mixer!</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rest%3F.html">rest?</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/ring.html">ring</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rrand.html">rrand</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rrand_i.html">rrand_i</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/rt.html">rt</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/run_code.html">run_code</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/run_file.html">run_file</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample.html">sample</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_buffer.html">sample_buffer</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_duration.html">sample_duration</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_free.html">sample_free</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_free_all.html">sample_free_all</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_groups.html">sample_groups</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_info.html">sample_info</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_loaded%3F.html">sample_loaded?</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_names.html">sample_names</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sample_paths.html">sample_paths</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/scale.html">scale</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/scale_names.html">scale_names</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/scsynth_info.html">scsynth_info</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/set.html">set</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/set_audio_latency!.html">set_audio_latency!</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/set_cent_tuning!.html">set_cent_tuning!</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/set_control_delta!.html">set_control_delta!</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/set_mixer_control!.html">set_mixer_control!</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/set_recording_bit_depth!.html">set_recording_bit_depth!</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/set_sched_ahead_time!.html">set_sched_ahead_time!</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/set_volume!.html">set_volume!</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/shuffle.html">shuffle</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sleep.html">sleep</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/spark.html">spark</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/spark_graph.html">spark_graph</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/spread.html">spread</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/status.html">status</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/stop.html">stop</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/stretch.html">stretch</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sync.html">sync</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/sync_bpm.html">sync_bpm</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/synth.html">synth</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/synth_names.html">synth_names</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/tick.html">tick</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/tick_reset.html">tick_reset</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/tick_reset_all.html">tick_reset_all</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/tick_set.html">tick_set</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/time_warp.html">time_warp</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/uncomment.html">uncomment</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_arg_bpm_scaling.html">use_arg_bpm_scaling</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_arg_checks.html">use_arg_checks</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_bpm.html">use_bpm</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_bpm_mul.html">use_bpm_mul</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_cent_tuning.html">use_cent_tuning</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_cue_logging.html">use_cue_logging</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_debug.html">use_debug</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_merged_midi_defaults.html">use_merged_midi_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_merged_sample_defaults.html">use_merged_sample_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_merged_synth_defaults.html">use_merged_synth_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_midi_defaults.html">use_midi_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_midi_logging.html">use_midi_logging</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_octave.html">use_octave</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_osc.html">use_osc</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_osc_logging.html">use_osc_logging</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_random_seed.html">use_random_seed</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_random_source.html">use_random_source</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_real_time.html">use_real_time</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_sample_bpm.html">use_sample_bpm</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_sample_defaults.html">use_sample_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_sched_ahead_time.html">use_sched_ahead_time</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_synth.html">use_synth</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_synth_defaults.html">use_synth_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_timing_guarantees.html">use_timing_guarantees</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_transpose.html">use_transpose</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/use_tuning.html">use_tuning</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/vector.html">vector</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/version.html">version</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/vt.html">vt</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/wait.html">wait</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_arg_bpm_scaling.html">with_arg_bpm_scaling</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_arg_checks.html">with_arg_checks</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_bpm.html">with_bpm</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_bpm_mul.html">with_bpm_mul</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_cent_tuning.html">with_cent_tuning</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_cue_logging.html">with_cue_logging</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_debug.html">with_debug</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_fx.html">with_fx</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_merged_midi_defaults.html">with_merged_midi_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_merged_sample_defaults.html">with_merged_sample_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_merged_synth_defaults.html">with_merged_synth_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_midi_defaults.html">with_midi_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_midi_logging.html">with_midi_logging</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_octave.html">with_octave</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_osc.html">with_osc</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_osc_logging.html">with_osc_logging</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_random_seed.html">with_random_seed</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_random_source.html">with_random_source</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_real_time.html">with_real_time</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_sample_bpm.html">with_sample_bpm</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_sample_defaults.html">with_sample_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_sched_ahead_time.html">with_sched_ahead_time</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_swing.html">with_swing</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_synth.html">with_synth</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_synth_defaults.html">with_synth_defaults</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_timing_guarantees.html">with_timing_guarantees</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_transpose.html">with_transpose</a></li><li><a href="http://127.0.0.1:4000/en/reference/lang/with_tuning.html">with_tuning</a></li></ul>
+</div>
+<div id="info" class="tabcontent section_toc info">
+<ul class="section_toc_list">
+<li><a href="http://127.0.0.1:4000/en/info/CHANGELOG.html">Changelog</a></li><li><a href="http://127.0.0.1:4000/en/info/CONTRIBUTORS.html">Contributors</a></li><li><a href="http://127.0.0.1:4000/en/info/COMMUNITY.html">Community</a></li><li><a href="http://127.0.0.1:4000/en/info/CORETEAM.html">Coreteam</a></li><li><a href="http://127.0.0.1:4000/en/info/LICENSE.html">License</a></li></ul>
+</div>
+</ul>
+</div>
+
+    
+    <div id="toc-bottom">
+  
+    <div class="tab_buttons">
+  <button class="tablink" id="info_tab_button" onclick="showTab('info', this)">Info</button>
+  <button class="tablink" id="tutorial_tab_button" onclick="showTab('tutorial', this)">Tutorial</button>
+  <button class="tablink" id="synths_tab_button" onclick="showTab('synths', this)" >Synths</button>
+  <button class="tablink" id="fx_tab_button" onclick="showTab('fx', this)" >FX</button>
+  <button class="tablink" id="samples_tab_button" onclick="showTab('samples', this)" >Samples</button>
+  <button class="tablink" id="lang_tab_button" onclick="showTab('lang', this)" >Lang</button>
+</div>
+
+  
+  <hr>
+  <details id="toc_footer">
+  <summary>Sonic Pi v3.3.1 Docs (en)</summary>
+  <details class="languages">
+    <summary>🌐 Language</summary>
+    <div class="content">
+      <ul class="language_list" style="columns: 1 auto;">
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Bosanski</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Català</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Čeština</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Dansk</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Deutsch</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">ελληνικά</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">English</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Español</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Eesti keel</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Suomi</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Français</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Galego</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">हिन्दी</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Magyar</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Bahasa Indonesia</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Íslenska</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Italiano</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">日本語</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">한국어</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Norsk Bokmål</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Nederlands</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Polski</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Português</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Português do Brasil</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Română</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Pусский</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Slovenščina</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Svenska</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">Türkçe</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">简体中文</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">廣東話</a>
+      </li>
+    
+  
+    
+
+      
+
+      
+      
+      
+      <li>
+        <a href="http://127.0.0.1:4000/">臺灣華語</a>
+      </li>
+    
+  
+</ul>
+
+    </div>
+  </details>
+  <details class="theme-switcher">
+  <summary>🎨 Theme</summary>
+  <div class="content">
+    <input type="radio" id="option-theme-light" name="theme" value="light">
+    <label for="option-theme-light">Light</label>
+
+    <input type="radio" id="option-theme-dark" name="theme" value="dark">
+    <label for="option-theme-dark">Dark</label>
+
+    <input type="radio" id="option-theme-high_contrast" name="theme" value="high_contrast">
+    <label for="option-theme-high_contrast">High Contrast</label>
+  </div>
+</details>
+
+  <footer>
+    <p>All documentation is copyright by Sam Aaron or the named author, and is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0 license</a>.</p>
+    <p>Site created by SunderB</p>
+  </footer>
+</details>
+
+</div>
+
+  </div>
+  <div class="page_content">
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                       ╘
+                                ─       ╛▒╛
+                                 ▐╫       ▄█├
+                          ─╟╛      █▄      ╪▓▀
+                ╓┤┤┤┤┤┤┤┤┤  ╩▌      ██      ▀▓▌
+                 ▐▒   ╬▒     ╟▓╘    ─▓█      ▓▓├
+                 ▒╫   ▒╪      ▓█     ▓▓─     ▓▓▄
+                ╒▒─  │▒       ▓█     ▓▓     ─▓▓─
+                ╬▒   ▄▒ ╒    ╪▓═    ╬▓╬     ▌▓▄
+                ╥╒   ╦╥     ╕█╒    ╙▓▐     ▄▓╫
+                           ▐╩     ▒▒      ▀▀
+                                ╒╪      ▐▄
+
+             _____             __        ____  __
+            / ___/____  ____  /_/____   / __ \/_/
+            \__ \/ __ \/ __ \/ / ___/  / /_/ / /
+           ___/ / /_/ / / / / / /__   / ____/ /
+          /____/\____/_/ /_/_/\___/  /_/   /_/
+</code></pre></div></div>
+
+<h2 id="code-music-live">Code. Music. Live.</h2>
+
+<p>Sonic Pi is a <em>new kind of musical instrument</em>. Instead of strumming
+strings or whacking things with sticks - you write code - <strong>live</strong>.</p>
+
+<p>Sonic Pi has been designed with the aim to find a harmonious balance
+between three core principles:</p>
+
+<ul>
+  <li><strong>Simple</strong> enough for the 10 year old within you</li>
+  <li><strong>Joyful</strong> enough for you to lose yourself through play</li>
+  <li><strong>Powerful</strong> enough for your own expressions</li>
+</ul>
+
+<p>Sonic Pi is a complete open source programming environment originally
+designed to explore and <em>teach programming concepts</em> within schools through
+the process of creating <em>new sounds</em>.</p>
+
+<p>In addition to being an engaging education resource it has evolved into
+an <em>extremely powerful</em> and performance-ready <em>live coding instrument</em> suitable
+for professional artists and DJs.</p>
+
+<p>Whilst Education is a core focus it now sits at the intersection
+between three core domains:</p>
+
+<ul>
+  <li><strong>Art</strong> - providing the means to express yourself and ask new questions of music and notation</li>
+  <li><strong>Technology</strong> - exploring questions related to liveness, time and concurrency in programming languages</li>
+  <li><strong>Education</strong>  - demonstrating that open play rather than rigid structures increases motivation and engagement in the classroom</li>
+</ul>
+
+<p>Again, finding a balance working to the best benefits of all these
+domains is the objective.</p>
+
+<ul>
+  <li>Info &amp; Latest Releases: https://sonic-pi.net</li>
+  <li>Source: https://github.com/sonic-pi-net/sonic-pi</li>
+  <li>Computing Education Resources for Schools: https://www.raspberrypi.org/learning/sonic-pi-lessons/</li>
+  <li>Music Education Toolkit for Schools: https://sonic-pi.mehackit.org</li>
+</ul>
+
+<h2 id="contributors">Contributors</h2>
+
+<p>Sonic Pi has been developed with support from many individuals and organisations. Please see the <a href="https://github.com/samaaron/sonic-pi/blob/main/CONTRIBUTORS.md">CONTRIBUTORS.md</a> file for a more complete list.</p>
+
+<h2 id="translations">Translations</h2>
+
+<p>Sonic Pi’s application and built in tutorial have been translated into several languages thanks to the awesome work of several <a href="CONTRIBUTORS.md#translation">volunteer translators</a>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">Status</th>
+      <th style="text-align: left">Language</th>
+      <th style="text-align: center">Application</th>
+      <th style="text-align: center">Tutorial</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/da/svg-badge.svg" alt="Translation Status of Sonic Pi: da" /></a></td>
+      <td style="text-align: left">Danish</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:red_circle:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/nl/svg-badge.svg" alt="Translation Status of Sonic Pi: nl" /></a></td>
+      <td style="text-align: left">Dutch</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/fi/svg-badge.svg" alt="Translation Status of Sonic Pi: fi" /></a></td>
+      <td style="text-align: left">Finnish</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:red_circle:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/fr/svg-badge.svg" alt="Translation Status of Sonic Pi: fr" /></a></td>
+      <td style="text-align: left">French</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/de/svg-badge.svg" alt="Translation Status of Sonic Pi: de" /></a></td>
+      <td style="text-align: left">German</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/hu/svg-badge.svg" alt="Translation Status of Sonic Pi: hu" /></a></td>
+      <td style="text-align: left">Hungarian</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:red_circle:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/is/svg-badge.svg" alt="Translation Status of Sonic Pi: is" /></a></td>
+      <td style="text-align: left">Icelandic</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:red_circle:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/it/svg-badge.svg" alt="Translation Status of Sonic Pi: it" /></a></td>
+      <td style="text-align: left">Italian</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/ja/svg-badge.svg" alt="Translation Status of Sonic Pi: ja" /></a></td>
+      <td style="text-align: left">Japanese</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/nb/svg-badge.svg" alt="Translation Status of Sonic Pi: nb" /></a></td>
+      <td style="text-align: left">Norwegian Bokmål</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/pl/svg-badge.svg" alt="Translation Status of Sonic Pi: pl" /></a></td>
+      <td style="text-align: left">Polish</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/pt/svg-badge.svg" alt="Translation Status of Sonic Pi: pt" /></a></td>
+      <td style="text-align: left">Portuguese</td>
+      <td style="text-align: center">:red_circle:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/ro/svg-badge.svg" alt="Translation Status of Sonic Pi: ro" /></a></td>
+      <td style="text-align: left">Romanian</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/ru/svg-badge.svg" alt="Translation Status of Sonic Pi: ru" /></a></td>
+      <td style="text-align: left">Russian</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/zh_Hans/svg-badge.svg" alt="Translation Status of Sonic Pi: zh_Hans" /></a></td>
+      <td style="text-align: left">Simplified Chinese</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:red_circle:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/es/svg-badge.svg" alt="Translation Status of Sonic Pi: es" /></a></td>
+      <td style="text-align: left">Spanish</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:white_check_mark:</td>
+    </tr>
+    <tr>
+      <td style="text-align: right"><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/si/svg-badge.svg" alt="Translation Status of Sonic Pi: si" /></a></td>
+      <td style="text-align: left">sinhalese</td>
+      <td style="text-align: center">:white_check_mark:</td>
+      <td style="text-align: center">:red_circle:</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Would you like to contribute a translation too? If so, please take a look at our <a href="https://github.com/samaaron/sonic-pi/blob/main/TRANSLATION.md">translation docs</a> to get started.</p>
+
+<h2 id="information-for-developers">Information for developers</h2>
+
+<p>Sonic Pi is under active development, and welcomes new contributors:</p>
+
+<ul>
+  <li><a href="HOW-TO-CONTRIBUTE.md">How to contribute</a></li>
+  <li><a href="CHANGELOG.md">Change log</a></li>
+  <li><a href="COMMUNITY.md">Community</a></li>
+  <li><a href="CONTRIBUTORS.md">Contributors</a></li>
+  <li>Building
+    <ul>
+      <li><a href="BUILD-LINUX.md">Linux</a></li>
+      <li><a href="BUILD-MAC.md">Mac</a></li>
+      <li><a href="BUILD-WINDOWS.md">Windows</a></li>
+    </ul>
+  </li>
+  <li><a href="LICENSE.md">License</a></li>
+  <li><a href="TESTING.md">Testing</a></li>
+  <li><a href="TRANSLATION.md">Translation</a></li>
+</ul>
+
+<p><a href="https://hosted.weblate.org/engage/sonic-pi/"><img src="https://hosted.weblate.org/widgets/sonic-pi/-/svg-badge.svg" alt="Weblate" /></a>
+<br />
+<a href="https://travis-ci.org/samaaron/sonic-pi"><img src="https://travis-ci.org/samaaron/sonic-pi.svg?branch=main" alt="Travis CI" /></a>
+<br /></p>
+
+  </div>
+  <script>
+    function showTab(section, element) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].style.backgroundColor = "";
+      }
+      document.getElementById(section).style.display = "block";
+      element.style.backgroundColor = "deeppink";
+    }
+    // Open the tab of the current section
+    document.getElementById("Info_tab_button").click();
+  </script>
+</body>
+</html>

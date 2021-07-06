@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="{{ page.lang }}">
+{% include head.html %}
+<body class="manual">
+  <div class="index">
+    {% if page.lang %}
+      {% capture toc_path %}toc_{{ page.lang }}.html{% endcapture %}
+      {% include {{ toc_path }} %}
+    {% endif %}
+    {% include toc_bottom.html %}
+  </div>
+  <div class="page_content">
+    {{ content }}
+  </div>
+  <script>
+    function showTab(section, element) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].style.backgroundColor = "";
+      }
+      document.getElementById(section).style.display = "block";
+      element.style.backgroundColor = "deeppink";
+    }
+    // Open the tab of the current section
+    document.getElementById("{{ page.section }}_tab_button").click();
+  </script>
+</body>
+</html>

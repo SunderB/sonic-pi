@@ -1,0 +1,22 @@
+<ul class="language_list" style="columns: {{ include.columns | default: 1 }} auto;">
+  {% for lang in site.data.languages %}
+    {% if page.lang %}
+
+      {% if page.lang == lang %}
+        {% capture bold_start %}<b>{% endcapture %}
+        {% capture bold_end %}</b>{% endcapture %}
+      {% endif %}
+
+      {% capture replace_string %}/{{ page.lang }}/{% endcapture %}
+      {% capture new_string %}/{{ lang[0] }}/{% endcapture %}
+      {% capture base_url %}{{ site.url }}{{ page.url }}{% endcapture %}
+      <li>
+        {{ bold_start }}<a href="{{ base_url | replace_first: replace_string, new_string }}">{{ lang[1] | default: lang[0] }}</a>{{ bold_end }}
+      </li>
+    {% else %}
+      <li>
+        {{ bold_start }}<a href="{{ site.url }}/{{ lang[0] }}/tutorial/01-Welcome-to-Sonic-Pi.html">{{ lang[1] | default: lang[0] }}</a>{{ bold_end }}
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>

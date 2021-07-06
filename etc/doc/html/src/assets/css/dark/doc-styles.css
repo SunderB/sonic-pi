@@ -1,0 +1,313 @@
+/* Dark theme */
+
+:root {
+  --font: "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", "Liberation Sans", sans-serif;
+
+  --text-colour: white;
+  --bg-colour: black;
+
+  --sidebar-bg-colour: #010101;
+  --nav-tab-bg-colour: #020202;
+
+  --link-colour: #2cd8ff;
+  --link-hover-colour: deeppink;
+
+  --emphasis-colour: darkorange;
+  --strong-colour: gold;
+
+  --code-font: "Hack", "Menlo", "Bitstream Vera Sans Mono", "DejaVu Sans Mono",  "Liberation Mono", "DroidSansMono", "Lucida Console", "Consolas", "Terminal", "Monaco", "Courier New", monospace;
+  --code-colour:            deeppink;
+  --code-symbol-colour:     deeppink;
+  --code-keyword-colour:    darkorange;
+  --code-number-colour:     dodgerblue;
+  --code-info-colour:       lightgrey;
+
+  --nav-link-colour:        white;
+  --nav-link-hover-colour:  deeppink;
+
+  --table-odd-bg-colour:          #444;
+  --table-odd-header-bg-colour:   #032c7f;
+  --table-even-bg-colour:         #333;
+  --table-even-header-bg-colour:  #32517f;
+
+  --table-examples-code-colour:   #fff;
+
+  --table-args-odd-bg-colour:     #e8e8e8;
+  --table-args-odd-colour:        #5e5e5e;
+  --table-args-even-bg-colour:    #5e5e5e;
+  --table-args-even-colour:       white;
+}
+
+/* Element types */
+body {
+  font-family: var(--font);
+  font-size: large;
+  color: var(--text-colour);
+  background-color: var(--bg-colour);
+}
+
+a {
+  color: var(--link-colour);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--link-hover-colour) !important;
+  text-decoration: underline;
+}
+
+em {
+  color: var(--emphasis-colour);
+}
+
+.page_content strong {
+  font-style: italic;
+  color: var(--strong-colour);
+}
+
+/* Headings */
+h1 {
+  font-size: xx-large;
+  font-weight: bold;
+  color: white;
+  background-color: deeppink;
+}
+
+h2 {
+  font-size: x-large;
+  font-weight: bold;
+  color: white;
+  background-color: dodgerblue;
+}
+
+/* Code and usage */
+pre, code {
+  font-family: var(--code-font);
+}
+code span {
+  font-size: 1em;
+}
+code {
+  color: var(--code-colour);
+}
+code .symbol {
+  color: var(--code-symbol-colour);
+}
+code .number {
+  color: var(--code-number-colour);
+}
+code .keyword {
+  color: var(--code-keyword-colour);
+}
+code .info {
+  color: var(--code-info-colour);
+}
+
+.page_content code { }
+.page_content pre  {
+    background-color: rgba(27,31,35,0.05);
+    border-color: black;
+}
+
+.usage {
+    /* placeholder */
+}
+.usage code {
+  font-size: large;
+  color: black;
+  background-color: white;
+}
+
+body.info {
+    font-family: "Hack", "Menlo", "Bitstream Vera Sans Mono", "DejaVu Sans Mono",  "Liberation Mono", "DroidSansMono", "Lucida Console", Consolas, Terminal, Monaco, "Courier New", monospace;
+}
+body.info a {
+  color: deeppink;
+}
+body.example code {
+  font-size: large;
+  color: dodgerblue;
+}
+
+/* Introduced */
+body.manual .introduced {
+  color: darkorange;
+  font-size: medium;
+}
+
+/* Arguments */
+body.manual table.arguments td {
+    font-size: medium;
+    padding: 2px;
+    font-family: "Hack", "Menlo", "Bitstream Vera Sans Mono", "DejaVu Sans Mono",  "Liberation Mono", "DroidSansMono", "Lucida Console", Consolas, Terminal, Monaco, "Courier New", monospace;
+}
+
+body.manual table.arguments td.odd,
+body.manual table.arguments td.odd a {
+  background-color: var(--table-args-odd-bg-colour);
+  color: var(--table-args-odd-colour);
+}
+
+body.manual table.arguments td.even,
+body.manual table.arguments td.even a {
+  background-color: var(--table-args-even-bg-colour);
+  color: var(--table-args-even-colour);
+}
+
+/* Option info */
+body.manual table.details td {
+  padding: 8px;
+}
+
+body.manual table.details td.key {
+    font-family: "Hack", "Menlo", "Bitstream Vera Sans Mono", "DejaVu Sans Mono",  "Liberation Mono", "DroidSansMono", "Lucida Console", Consolas, Terminal, Monaco, "Courier New", monospace;
+  font-size: large;
+}
+
+body.manual table.details td.odd {
+  background-color: var(--table-odd-bg-colour);
+}
+
+body.manual table.details td.even {
+  background-color: var(--table-even-bg-colour);
+}
+
+body.manual table.details td.odd.key {
+  background-color: var(--table-odd-header-bg-colour);
+}
+
+body.manual table.details td.even.key {
+  background-color: var(--table-even-header-bg-colour);
+}
+
+body.manual table.details .properties {
+  font-size: medium;
+  font-style: italic;
+}
+
+/* Examples */
+body.manual table.examples td {
+  padding: 8px;
+}
+
+body.manual table.examples code {
+  color: var(--table-examples-code-colour);
+  font-size: medium;
+}
+
+body.manual table.examples td.odd {
+  background-color: var(--table-odd-bg-colour);
+}
+
+body.manual table.examples td.even {
+  background-color: var(--table-even-bg-colour);
+}
+
+body.manual table.examples td.odd.head {
+  background-color: var(--table-examples-odd-header-bg-colour);
+}
+
+body.manual table.examples td.even.head {
+  background-color: var(--table-examples-even-header-bg-colour);
+}
+
+/* Docs sidebar */
+.index  {
+  background-color: var(--sidebar-bg-colour);
+}
+
+.tabcontent a {
+    color: var(--nav-link-colour);
+}
+.tabcontent a:hover {
+    color: var(--nav-link-hover-colour);
+}
+.tabcontent {
+  background-color: var(--nav-tab-bg-colour);
+}
+.section_toc.tutorial > .section_toc_list > li > a {
+    color: deeppink;
+}
+
+/* GUI text and logs */
+.asciilogo {
+    font-size: medium;
+    color: deeppink;
+}
+
+.highlight {
+    color: deeppink;
+}
+
+.error_description {
+    font-size: medium;
+    background-color: deeppink;
+    color: white;
+}
+
+.syntax_error_description {
+    font-size: medium;
+    background-color: dodgerblue;
+    color: white;
+}
+
+.backtrace {
+    font-size: small;
+    color: #5e5e5e;
+}
+
+.error_line {
+    font-size: large;
+    color: #5e5e5e;
+}
+
+.error_msg {
+    font-size: large;
+    color: deeppink;
+}
+
+.version {
+  font-size: small;
+}
+
+.strapline {
+  font-size: large;
+}
+
+/* GUI autocomplete? */
+.hljs-string {
+    color: #61CE3C;
+}
+.hljs-symbol {
+    color: deeppink;
+}
+.hljs-number {
+  color: #1e90ff;
+}
+.hljs-keyword {
+    color: #ff8c00;
+}
+.hljs-params {}
+.hljs-comment {
+    font-style: italic;
+}
+.hljs {
+    color: #5e5e5e;
+}
+
+/* Unused??? */
+#doc-footer {
+  background-color: deeppink;
+  color: white;
+}
+
+#doc-version {
+    color: white;
+}
+
+#doc-nav {
+    color: #282828;
+}
+
+#doc-nav:hover {
+    color: white !important;
+}
