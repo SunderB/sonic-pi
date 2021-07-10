@@ -1,21 +1,31 @@
 <ul class="language_list" style="columns: {{ include.columns | default: 1 }} auto;">
+  {% comment %} Determine current language {% endcomment %}
+  {% if page.lang %}
+    {% capture current_lang %}{{ page.lang }}{% endcapture %}
+  {% else %}
+    {% comment %} Try to deduce language from url {% endcomment %}
+    {% assign url_sections = page.url | split: "/" %}
+    {% capture current_lang %}{{ url_sections[0] }}{% endcapture %}
+  {% endif %}
+
+
   {% for lang in site.data.languages %}
+    {% if current_lang == lang[0] %}
+      {% capture bold_start %}<b>{% endcapture %}
+      {% capture bold_end %}</b>{% endcapture %}
+    {% endif %}
+
     {% if page.lang %}
-
-      {% if page.lang == lang %}
-        {% capture bold_start %}<b>{% endcapture %}
-        {% capture bold_end %}</b>{% endcapture %}
-      {% endif %}
-
       {% capture replace_string %}/{{ page.lang }}/{% endcapture %}
       {% capture new_string %}/{{ lang[0] }}/{% endcapture %}
-      {% capture base_url %}{{ site.url }}{{ page.url }}{% endcapture %}
+      {% capture base_url %}{{ site.url }}{{ site.baseurl }}{{ page.url }}{% endcapture %}
       <li>
         {{ bold_start }}<a href="{{ base_url | replace_first: replace_string, new_string }}">{{ lang[1] | default: lang[0] }}</a>{{ bold_end }}
       </li>
     {% else %}
+      {% comment %} This is probably the 404 page {% endcomment %}
       <li>
-        {{ bold_start }}<a href="{{ site.url }}/{{ lang[0] }}/tutorial/01-Welcome-to-Sonic-Pi.html">{{ lang[1] | default: lang[0] }}</a>{{ bold_end }}
+        {{ bold_start }}<a href="{{ lang[0] }}/tutorial/01-Welcome-to-Sonic-Pi.html">{{ lang[1] | default: lang[0] }}</a>{{ bold_end }}
       </li>
     {% endif %}
   {% endfor %}

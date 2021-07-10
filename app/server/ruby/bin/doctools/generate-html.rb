@@ -520,7 +520,7 @@ puts "Generating info html pages..."
 FileUtils.rm_r("#{etc_path}/doc/html/generated_src/info/") if Dir.exists?("#{etc_path}/doc/html/generated_src/info/")
 FileUtils.mkdir_p("#{etc_path}/doc/html/generated_src/info/")
 
-outputdir = "#{etc_path}/doc/html/src"
+outputdir = "#{etc_path}/doc/html/generated_src"
 info_toc = ""
 
 info_sources.each do |src|

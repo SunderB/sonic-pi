@@ -68,7 +68,7 @@ module SonicPiDocPlugin
           generated_toc << "<ul class=\"section_toc_list\">\n"
           section_data["pages"].each { |page|
             generated_toc << "<li>"
-            generated_toc << "<a href=\"#{File.join(site.config["url"], page["url"])}\">#{page["name"].gsub(/"/, '&quot;')}</a>"
+            generated_toc << "<a href=\"#{File.join(site.config["url"], site.config["baseurl"], page["url"])}\">#{page["name"].gsub(/"/, '&quot;')}</a>"
             generated_toc << "</li>"
             #puts(page)
             if (page.key?("subpages"))
@@ -76,7 +76,7 @@ module SonicPiDocPlugin
                 generated_toc << "<ul class=\"toc_list\">\n"
                 page["subpages"].each { |subpage|
                   generated_toc << "<li>"
-                  generated_toc << "<a href=\"#{File.join(site.config["url"], subpage["url"])}\">#{subpage["name"].gsub(/"/, '&quot;')}</a>"
+                  generated_toc << "<a href=\"#{File.join(site.config["url"], site.config["baseurl"], subpage["url"])}\">#{subpage["name"].gsub(/"/, '&quot;')}</a>"
                   generated_toc << "</li>"
                 }
                 generated_toc << "</ul>\n"

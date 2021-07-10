@@ -24,6 +24,8 @@ require 'optparse'
 require 'fileutils'
 require 'json'
 
+@etc_path = File.expand_path("../../../../../etc/", File.dirname(__FILE__))
+
 # List of all languages with GUI translation files
 @lang_names = Hash[
   "bg" => "български", # Bulgarian
@@ -231,8 +233,10 @@ if $task == :extract then
   lang = ['en']
 else
   lang =
-    Dir[File.expand_path("../../../../../etc/doc/translatons/tutorial/sonic-pi-tutorial-*.po", __dir__)].
+    Dir[File.expand_path("#{@etc_path}/doc/translations/tutorial/sonic-pi-tutorial-*.po", __dir__)].
     map { |p| File.basename(p).gsub(/sonic-pi-tutorial-(.*?).po/, '\1') }.sort
+  puts(@etc_path)
+  puts(lang.to_s())
 end
 
 def process_section(section, sources, translation_dir, out_dir, lang)

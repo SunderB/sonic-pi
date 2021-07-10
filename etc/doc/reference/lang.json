@@ -810,6 +810,28 @@
       }
     ]
   },
+  "current_random_source": {
+    "summary": "Get current random source",
+    "usage": {
+      "function": "current_random_source",
+      "args": {
+      }
+    },
+    "description": "Returns the source of the current random number generator (what kind of noise is generating the random numbers).\n\nThis can be set via the fns `use_random_source` and `with_random_source`. Each source will provide a different pattern of random numbers.",
+    "introduced": "v3.4",
+    "opts": {
+    },
+    "examples": [
+      {
+        "code": "puts current_random_source\n",
+        "comments": "# Print out the current random source\n"
+      },
+      {
+        "code": "use_random_source :white\nputs rand\nputs rand\na = current_random_source\nuse_random_source :perlin\nputs rand\nputs rand\nuse_random_source a\n                   \nputs rand\nputs rand\n",
+        "comments": "# Use white noise as the distribution (default)\n# => 0.75006103515625\n# => 0.733917236328125\n# Grab the current random number source (:white)\n# Use perlin noise as the distribution\n# => 0.58526611328125\n# => 0.597015380859375\n# Restore the previous random number source (:white)\n# The numbers will again be generated from a white noise distribution\n# => 0.10821533203125\n# => 0.54010009765625\n"
+      }
+    ]
+  },
   "current_sample_defaults": {
     "summary": "Get current sample defaults",
     "usage": {
@@ -2373,11 +2395,15 @@
     "examples": [
       {
         "code": "midi_clock_beat\n",
-        "comments": "#=> Send 24 clock ticks over a period of 1 beat\n"
+        "comments": "#=> Send 24 clock ticks over a period of 1 beat to all connected MIDI devices\n"
       },
       {
         "code": "midi_clock_beat 0.5\n",
-        "comments": "#=> Send 24 clock ticks over a period of 0.5 beats\n"
+        "comments": "#=> Send 24 clock ticks over a period of 0.5 beats to all connected MIDI devices\n"
+      },
+      {
+        "code": "midi_clock_beat port: \"moog_subphatty\"\n",
+        "comments": "#=> Send 24 clock ticks over a period of 1 beat to just the MIDI port with name moog_subphatty\n"
       },
       {
         "code": "live_loop :clock do \n  midi_clock_beat   \n  sleep 1\nend\n",
@@ -3841,11 +3867,11 @@
     "examples": [
       {
         "code": "print rand_i_look(5)\n",
-        "comments": "#=> will print either 0, 1, 2, 3, or 4 to the output pane\n"
+        "comments": "# will print either 0, 1, 2, 3, or 4 to the output pane\n"
       },
       {
-        "code": "print rand_i_look(5)\nprint rand_i_look(5)\nprint rand_i_look(5)\nprint rand_i(5)\nprint rand_i_look(5)\n",
-        "comments": "#=> will print either 0, 1, 2, 3, or 4 to the output pane\n#=> will print the same number again\n#=> will print the same number again\n#=> will print either 0, 1, 2, 3, or 4 to the output pane\n#=> will print the same number as the previous statement\n"
+        "code": "print rand_i_look(5)\nprint rand_i_look(5)\nprint rand_i_look(5)\nprint rand_i(5)\n               \n               \nprint rand_i_look(5)\n",
+        "comments": "# will print either 0, 1, 2, 3, or 4 to the output pane\n# will print the same number again\n# will print the same number again\n# will still print the same number again\n# (this is the number rand_i_look was 'looking ahead' at)\n# the number is now consumed\n# will print either 0, 1, 2, 3, or 4 to the output pane\n"
       }
     ]
   },
@@ -3864,11 +3890,11 @@
     "examples": [
       {
         "code": "print rand_look(0.5)\n",
-        "comments": "#=> will print a number like 0.375030517578125 to the output pane\n"
+        "comments": "# will print a number like 0.375030517578125 to the output pane\n"
       },
       {
-        "code": "print rand_look(0.5)\n  print rand_look(0.5)\n  print rand_look(0.5)\n  print rand(0.5)\n  print rand_look(0.5)\n",
-        "comments": "#=> will print a number like 0.375030517578125 to the output pane\n#=> will print the same number again\n#=> will print the same number again\n#=> will print a different random number\n#=> will print the same number as the previous line again.\n"
+        "code": "print rand_look(0.5)\nprint rand_look(0.5)\nprint rand_look(0.5)\nprint rand(0.5)\n               \n               \nprint rand_look(0.5)\n",
+        "comments": "# will print a number like 0.375030517578125 to the output pane\n# will print the same number again\n# will print the same number again\n# will still print the same number again\n# (this is the number rand_look was 'looking ahead' at)\n# the number is now consumed\n# will print a new number like 0.3669586181640625 to the output pane\n"
       }
     ]
   },
@@ -6011,7 +6037,7 @@
     "examples": [
       {
         "code": "\n  use_random_seed 1\n  puts rand\n  use_random_seed 1\n  puts rand \n",
-        "comments": "# Basic usage\n# reset random seed to 1\n# => 0.417022004702574\n# reset random seed back to 1\n#=> 0.417022004702574\n"
+        "comments": "# Basic usage\n# reset random seed to 1\n# => 0.733917236328125\n# reset random seed back to 1\n#=> 0.733917236328125\n"
       },
       {
         "code": "\n  notes = (scale :eb3, :minor_pentatonic) \n                                          \n  with_fx :reverb do\n    live_loop :repeating_melody do        \n      use_random_seed 300                 \n                                          \n                                          \n                                          \n                                          \n      8.times do                          \n                                          \n                                          \n        play notes.choose, release: 0.1   \n                                          \n                                          \n                                          \n        sleep 0.125\n      end\n    end\n  end\n",
@@ -6051,8 +6077,8 @@
     },
     "examples": [
       {
-        "code": "use_real_time 1\n",
-        "comments": "# Code will now run approximately 1 second ahead of audio.\n"
+        "code": "use_real_time\n",
+        "comments": "# Code will now produce sound without a scheduling delay.\n"
       }
     ]
   },
@@ -6708,7 +6734,7 @@
     "examples": [
       {
         "code": "use_random_seed 1\n  puts rand\n  puts rand \n  use_random_seed 1\n  puts rand\n  with_random_seed 1 do\n    puts rand\n    puts rand\n  end\n  puts rand\n           \n",
-        "comments": "# reset random seed to 1\n# => 0.417022004702574\n#=> 0.7203244934421581\n# reset it back to 1\n# => 0.417022004702574\n# reset seed back to 1 just for this block\n# => 0.417022004702574\n#=> 0.7203244934421581\n \n# => 0.7203244934421581\n# notice how the original generator is restored\n"
+        "comments": "# reset random seed to 1\n# => 0.733917236328125\n#=> 0.464202880859375\n# reset it back to 1\n# => 0.733917236328125\n# reset seed back to 1 just for this block\n# => 0.733917236328125\n#=> 0.464202880859375\n \n# => 0.464202880859375\n# notice how the original generator is restored\n"
       },
       {
         "code": "\n  notes = (scale :eb3, :minor_pentatonic, num_octaves: 2) \n                                          \n  with_fx :reverb do\n    live_loop :repeating_melody do        \n      with_random_seed 300 do             \n                                          \n                                          \n                                          \n                                          \n        8.times do                        \n                                          \n                                          \n          play notes.choose, release: 0.1 \n                                          \n                                          \n                                          \n          sleep 0.125\n        end\n      end\n      play notes.choose, amp: 1.5, release: 0.5\n                                               \n                                               \n                                               \n    end\n  end\n",
@@ -6748,8 +6774,8 @@
     },
     "examples": [
       {
-        "code": "use_real_time 1\n",
-        "comments": "# Code will now run approximately 1 second ahead of audio.\n"
+        "code": "with_real_time do\n  play 70 \nend\nplay 70 \n",
+        "comments": " \n# Sound will happen without a scheduling delay.\n \n# Sound will happen with the default latency (0.5s).\n"
       }
     ]
   },

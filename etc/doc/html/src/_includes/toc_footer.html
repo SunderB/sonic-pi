@@ -1,11 +1,11 @@
 <details id="toc_footer">
-  <summary>Sonic Pi v{{ site.data.version[0].version }} Docs ({{ page.lang }})</summary>
-  <details class="languages">
+    <summary>Sonic Pi v{{ site.data.version[0].version }} Docs ({{ site.data.languages[page.lang] }})</summary>
+  <!-- <details class="languages"> -->
     <summary>🌐 Language</summary>
     <div class="content">
-      {% include language_list.html %}
+      {% include language_list.html columns='2' %}
     </div>
-  </details>
+  <!-- </details> -->
   {% include theme_switcher.html %}
   <footer>
     <p>All documentation is copyright by Sam Aaron or the named author, and is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0 license</a>.</p>

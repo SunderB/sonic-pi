@@ -43,7 +43,9 @@ h2 {
 
 .index {
     text-align: left;
-    padding: 0px 10px 10px 10px;
+
+    min-width: 450px;
+    padding: 10px 10px 10px 10px;
     /*width: 30%;*/
     /*height: 100%;*/
 
@@ -206,6 +208,17 @@ body.manual {
   display: flex;
   height: 100vh;
   margin: 0;
+}
+
+#toc_footer {
+  position: fixed;
+  bottom: 0;
+  padding: 10px;
+  margin: 0;
+  width: 430px;
+  overflow: scroll;
+  background: hotpink;
+  box-shadow: 0px -5px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
 #toc_footer > * {

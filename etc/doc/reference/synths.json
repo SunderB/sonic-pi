@@ -1,4 +1,318 @@
 {
+  "bass_foundation": {
+    "name": "Bass Foundation",
+    "description": "A soft bass synth inspired by the sounds of the 80s. Use together with :bass_highend if you want to give it a gargling component. Adapted for Sonic Pi from [Steal This Sound](https://raw.githubusercontent.com/supercollider/supercollider/develop/examples/demonstrations/stealthissound.scd). Published there under [GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html), so re-published under the same terms. The source code is available [on the Sonic Pi GitHub repository](https://github.com/sonic-pi-net/sonic-pi). Date of modification: 10.01.2021",
+    "introduced": "v3.3",
+    "usage": {
+      "function": "use_synth",
+      "args": {
+        ":bass_foundation": "symbol"
+      }
+    },
+    "opts": {
+      "note": {
+        "description": "Note to play. Either a MIDI number or a symbol representing a note. For example: `30`, `52`, `:C`, `:C2`, `:Eb4`, or `:Ds3`",
+        "default": 40,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "amp": {
+        "description": "The amplitude of the sound. Typically a value between 0 and 1. Higher amplitudes may be used, but won't make the sound louder, they will just reduce the quality of all the sounds currently being played (due to compression.)",
+        "default": 1,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "pan": {
+        "description": "Position of sound in stereo. With headphones on, this means how much of the sound is in the left ear, and how much is in the right ear. With a value of -1, the sound is completely in the left ear, a value of 0 puts the sound equally in both ears and a value of 1 puts the sound in the right ear. Values in between -1 and 1 move the sound accordingly.",
+        "default": 0,
+        "bpm_scale": null,
+        "constraints": [
+          "must be a value between -1 and 1 inclusively"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "attack": {
+        "description": "Amount of time (in beats) for sound to reach full amplitude (attack_level). A short attack (i.e. 0.01) makes the initial part of the sound very percussive like a sharp tap. A longer attack (i.e 1) fades the sound in gently. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.01,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "decay": {
+        "description": "Amount of time (in beats) for the sound to move from full amplitude (attack_level) to the sustain amplitude (sustain_level).",
+        "default": 0,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "sustain": {
+        "description": "Amount of time (in beats) for sound to remain at sustain level amplitude. Longer sustain values result in longer sounds. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.9,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "release": {
+        "description": "Amount of time (in beats) for sound to move from sustain level amplitude to silent. A short release (i.e. 0.01) makes the final part of the sound very percussive (potentially resulting in a click). A longer release (i.e 1) fades the sound out gently. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.05,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "attack_level": {
+        "description": "Amplitude level reached after attack phase and immediately before decay phase",
+        "default": 1,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "decay_level": {
+        "description": "Amplitude level reached after decay phase and immediately before sustain phase. Defaults to sustain_level unless explicitly set",
+        "default": 0.5,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "sustain_level": {
+        "description": "Amplitude level reached after decay phase and immediately before release phase.",
+        "default": 0,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "cutoff": {
+        "description": "MIDI note representing the highest frequencies allowed to be present in the sound. A low value like 30 makes the sound round and dull, a high value like 100 makes the sound buzzy and crispy.",
+        "default": 83,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater",
+          "must be a value less than 131"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "res": {
+        "description": "Filter resonance as a value between 0 and 1. Large amounts of resonance (a res: near 1) can create a whistling sound around the cutoff frequency. Smaller values produce less resonance.",
+        "default": 0.5,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater",
+          "must be a value less than 1"
+        ],
+        "modulatable": true,
+        "slidable": true
+      }
+    },
+    "slide": {
+      "slide_doc": "Any parameter that is slidable has three additional options named _slide, _slide_curve, and _slide_shape.  For example, 'amp' is slidable, so you can also set amp_slide, amp_slide_curve, and amp_slide_shape with the following effects:",
+      "slide_args": {
+        "_slide": {
+          "default": 0,
+          "doc": "Amount of time (in beats) for the parameter value to change. A long parameter_slide value means that the parameter takes a long time to slide from the previous value to the new value. A parameter_slide of 0 means that the parameter instantly changes to the new value."
+        },
+        "_slide_shape": {
+          "default": 5,
+          "doc": "Shape of curve. 0: step, 1: linear, 3: sine, 4: welch, 5: custom (use *_slide_curve: opt e.g. amp_slide_curve:), 6: squared, 7: cubed. "
+        },
+        "_slide_curve": {
+          "default": 0,
+          "doc": "Shape of the slide curve (only honoured if slide shape is 5). 0 means linear and positive and negative numbers curve the segment up and down respectively."
+        }
+      }
+    }
+  },
+  "bass_highend": {
+    "name": "Bass Highend",
+    "description": "An addition to the :bass_foundation synth inspired by the sounds of the 80s. Use them together if you want to give it a rough, slurping, or gargling component. Adapted for Sonic Pi from [Steal This Sound](https://raw.githubusercontent.com/supercollider/supercollider/develop/examples/demonstrations/stealthissound.scd). Published there under [GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html), so re-published under the same terms. The source code is available [on the Sonic Pi GitHub repository](https://github.com/sonic-pi-net/sonic-pi). Date of modification: 11.01.2021",
+    "introduced": "v3.3",
+    "usage": {
+      "function": "use_synth",
+      "args": {
+        ":bass_highend": "symbol"
+      }
+    },
+    "opts": {
+      "note": {
+        "description": "Note to play. Either a MIDI number or a symbol representing a note. For example: `30`, `52`, `:C`, `:C2`, `:Eb4`, or `:Ds3`",
+        "default": 40,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "amp": {
+        "description": "The amplitude of the sound. Typically a value between 0 and 1. Higher amplitudes may be used, but won't make the sound louder, they will just reduce the quality of all the sounds currently being played (due to compression.)",
+        "default": 1,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "pan": {
+        "description": "Position of sound in stereo. With headphones on, this means how much of the sound is in the left ear, and how much is in the right ear. With a value of -1, the sound is completely in the left ear, a value of 0 puts the sound equally in both ears and a value of 1 puts the sound in the right ear. Values in between -1 and 1 move the sound accordingly.",
+        "default": 0,
+        "bpm_scale": null,
+        "constraints": [
+          "must be a value between -1 and 1 inclusively"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "attack": {
+        "description": "Amount of time (in beats) for sound to reach full amplitude (attack_level). A short attack (i.e. 0.01) makes the initial part of the sound very percussive like a sharp tap. A longer attack (i.e 1) fades the sound in gently. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.01,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "decay": {
+        "description": "Amount of time (in beats) for the sound to move from full amplitude (attack_level) to the sustain amplitude (sustain_level).",
+        "default": 0,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "sustain": {
+        "description": "Amount of time (in beats) for sound to remain at sustain level amplitude. Longer sustain values result in longer sounds. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.9,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "release": {
+        "description": "Amount of time (in beats) for sound to move from sustain level amplitude to silent. A short release (i.e. 0.01) makes the final part of the sound very percussive (potentially resulting in a click). A longer release (i.e 1) fades the sound out gently. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.05,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "attack_level": {
+        "description": "Amplitude level reached after attack phase and immediately before decay phase",
+        "default": 1,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "decay_level": {
+        "description": "Amplitude level reached after decay phase and immediately before sustain phase. Defaults to sustain_level unless explicitly set",
+        "default": 0.5,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "sustain_level": {
+        "description": "Amplitude level reached after decay phase and immediately before release phase.",
+        "default": 0,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "cutoff": {
+        "description": "MIDI note representing the highest frequencies allowed to be present in the sound. A low value like 30 makes the sound round and dull, a high value like 100 makes the sound buzzy and crispy.",
+        "default": 102,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater",
+          "must be a value less than 131"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "res": {
+        "description": "Filter resonance as a value between 0 and 1. Large amounts of resonance (a res: near 1) can create a whistling sound around the cutoff frequency. Smaller values produce less resonance.",
+        "default": 0.1,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater",
+          "must be a value less than 1"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "drive": {
+        "description": "Higher drive values make the sound louder and rougher.",
+        "default": 2.0,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": true,
+        "slidable": true
+      }
+    },
+    "slide": {
+      "slide_doc": "Any parameter that is slidable has three additional options named _slide, _slide_curve, and _slide_shape.  For example, 'amp' is slidable, so you can also set amp_slide, amp_slide_curve, and amp_slide_shape with the following effects:",
+      "slide_args": {
+        "_slide": {
+          "default": 0,
+          "doc": "Amount of time (in beats) for the parameter value to change. A long parameter_slide value means that the parameter takes a long time to slide from the previous value to the new value. A parameter_slide of 0 means that the parameter instantly changes to the new value."
+        },
+        "_slide_shape": {
+          "default": 5,
+          "doc": "Shape of curve. 0: step, 1: linear, 3: sine, 4: welch, 5: custom (use *_slide_curve: opt e.g. amp_slide_curve:), 6: squared, 7: cubed. "
+        },
+        "_slide_curve": {
+          "default": 0,
+          "doc": "Shape of the slide curve (only honoured if slide shape is 5). 0 means linear and positive and negative numbers curve the segment up and down respectively."
+        }
+      }
+    }
+  },
   "beep": {
     "name": "Sine Wave",
     "description": "A simple pure sine wave. The sine wave is the simplest, purest sound there is and is the fundamental building block of all noise. The mathematician Fourier demonstrated that any sound could be built out of a number of sine waves (the more complex the sound, the more sine waves needed). Have a play combining a number of sine waves to design your own sounds!",
@@ -6975,6 +7289,188 @@
         ],
         "modulatable": true,
         "slidable": true
+      }
+    },
+    "slide": {
+      "slide_doc": "Any parameter that is slidable has three additional options named _slide, _slide_curve, and _slide_shape.  For example, 'amp' is slidable, so you can also set amp_slide, amp_slide_curve, and amp_slide_shape with the following effects:",
+      "slide_args": {
+        "_slide": {
+          "default": 0,
+          "doc": "Amount of time (in beats) for the parameter value to change. A long parameter_slide value means that the parameter takes a long time to slide from the previous value to the new value. A parameter_slide of 0 means that the parameter instantly changes to the new value."
+        },
+        "_slide_shape": {
+          "default": 5,
+          "doc": "Shape of curve. 0: step, 1: linear, 3: sine, 4: welch, 5: custom (use *_slide_curve: opt e.g. amp_slide_curve:), 6: squared, 7: cubed. "
+        },
+        "_slide_curve": {
+          "default": 0,
+          "doc": "Shape of the slide curve (only honoured if slide shape is 5). 0 means linear and positive and negative numbers curve the segment up and down respectively."
+        }
+      }
+    }
+  },
+  "winwood_lead": {
+    "name": "Winwood Lead",
+    "description": "A lead synth inspired by the Winwood songs from the early 80s.  Adapted for Sonic Pi from [Steal This Sound](https://raw.githubusercontent.com/supercollider/supercollider/develop/examples/demonstrations/stealthissound.scd). Published there under [GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html), so re-published under the same terms. The source code is available [on the Sonic Pi GitHub repository](https://github.com/sonic-pi-net/sonic-pi). Date of modification: 10.01.2021",
+    "introduced": "v3.3",
+    "usage": {
+      "function": "use_synth",
+      "args": {
+        ":winwood_lead": "symbol"
+      }
+    },
+    "opts": {
+      "note": {
+        "description": "Note to play. Either a MIDI number or a symbol representing a note. For example: `30`, `52`, `:C`, `:C2`, `:Eb4`, or `:Ds3`",
+        "default": 69,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "amp": {
+        "description": "The amplitude of the sound. Typically a value between 0 and 1. Higher amplitudes may be used, but won't make the sound louder, they will just reduce the quality of all the sounds currently being played (due to compression.)",
+        "default": 1,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "pan": {
+        "description": "Position of sound in stereo. With headphones on, this means how much of the sound is in the left ear, and how much is in the right ear. With a value of -1, the sound is completely in the left ear, a value of 0 puts the sound equally in both ears and a value of 1 puts the sound in the right ear. Values in between -1 and 1 move the sound accordingly.",
+        "default": 0,
+        "bpm_scale": null,
+        "constraints": [
+          "must be a value between -1 and 1 inclusively"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "attack": {
+        "description": "Amount of time (in beats) for sound to reach full amplitude (attack_level). A short attack (i.e. 0.01) makes the initial part of the sound very percussive like a sharp tap. A longer attack (i.e 1) fades the sound in gently. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.01,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "decay": {
+        "description": "Amount of time (in beats) for the sound to move from full amplitude (attack_level) to the sustain amplitude (sustain_level).",
+        "default": 0,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "sustain": {
+        "description": "Amount of time (in beats) for sound to remain at sustain level amplitude. Longer sustain values result in longer sounds. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.9,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "release": {
+        "description": "Amount of time (in beats) for sound to move from sustain level amplitude to silent. A short release (i.e. 0.01) makes the final part of the sound very percussive (potentially resulting in a click). A longer release (i.e 1) fades the sound out gently. Full length of sound is attack + decay + sustain + release.",
+        "default": 0.05,
+        "bpm_scale": true,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "attack_level": {
+        "description": "Amplitude level reached after attack phase and immediately before decay phase",
+        "default": 1,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "decay_level": {
+        "description": "Amplitude level reached after decay phase and immediately before sustain phase. Defaults to sustain_level unless explicitly set",
+        "default": 0.5,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "sustain_level": {
+        "description": "Amplitude level reached after decay phase and immediately before release phase.",
+        "default": 0.5,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater"
+        ],
+        "modulatable": false,
+        "slidable": null
+      },
+      "cutoff": {
+        "description": "MIDI note representing the highest frequencies allowed to be present in the sound. A low value like 30 makes the sound round and dull, a high value like 100 makes the sound buzzy and crispy.",
+        "default": 119,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater",
+          "must be a value less than 131"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "res": {
+        "description": "Filter resonance as a value between 0 and 1. Large amounts of resonance (a res: near 1) can create a whistling sound around the cutoff frequency. Smaller values produce less resonance.",
+        "default": 0.8,
+        "bpm_scale": null,
+        "constraints": [
+          "must be zero or greater",
+          "must be a value less than 1"
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "lfo_width": {
+        "description": "Width of the low-frequency oscillator (LFO) which determines how wide base tones oscillate around their base frequencies",
+        "default": 0.01,
+        "bpm_scale": null,
+        "constraints": [
+
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "lfo_rate": {
+        "description": "Width of the low-frequency oscillator (LFO) which determines how fast base tones oscillate around their base frequencies",
+        "default": 8,
+        "bpm_scale": null,
+        "constraints": [
+
+        ],
+        "modulatable": true,
+        "slidable": true
+      },
+      "seed": {
+        "description": "Seed value for rand num generator used for the phase offset of the triangle low-frequency oscillator (LFO)",
+        "default": 0,
+        "bpm_scale": null,
+        "constraints": [
+
+        ],
+        "modulatable": false,
+        "slidable": null
       }
     },
     "slide": {
