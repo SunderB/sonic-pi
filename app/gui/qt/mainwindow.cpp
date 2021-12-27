@@ -1089,17 +1089,29 @@ void MainWindow::toggleComment(SonicPiScintilla* ws)
 QString MainWindow::rootPath()
 {
     // diversity is the spice of life
-#if defined(Q_OS_MAC)
-    return QCoreApplication::applicationDirPath() + "/../Resources";
-#elif defined(Q_OS_WIN)
-    // CMake builds, the exe is in build/debug/sonic-pi, etc.
-    // We should pass this to the build instead of wiring it up this way!
-    return QCoreApplication::applicationDirPath() + "/../../../../..";
-#else
-    // On linux, CMake builds app into the build folder
-    return QCoreApplication::applicationDirPath() + "/../../../..";
-#endif
+    QString is_dev = qgetenv("SONIC_PI_DEV").constData();
+    if (is_dev.isEmpty()) {
+        #if defined(Q_OS_MAC)
+            return QCoreApplication::applicationDirPath() + "/../Resources";
+        #else
+            return QCoreApplication::applicationDirPath() + "/../../..";
+        #endif
+    }
+    else
+    {
+        #if defined(Q_OS_MAC)
+            return QCoreApplication::applicationDirPath() + "/../Resources";
+        #elif defined(Q_OS_WIN)
+            // CMake builds, the exe is in build/debug/sonic-pi, etc.
+            // We should pass this to the build instead of wiring it up this way!
+            return QCoreApplication::applicationDirPath() + "/../../../../..";
+        #else
+            // On linux, CMake builds app into the build folder
+            return QCoreApplication::applicationDirPath() + "/../../../..";
+        #endif
+    }
 }
+
 
 void MainWindow::splashClose()
 {
