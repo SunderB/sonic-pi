@@ -84,3 +84,5 @@ elseif(UNIX)
     include_directories(${ERLANG_INCLUDE_PATH})
     target_link_libraries(libsp_midi pthread ${ALSA_LIBRARY} dl rtmidi)
 endif(MSVC)
+
+install(TARGETS libsp_midi LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})

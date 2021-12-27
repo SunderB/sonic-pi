@@ -13,6 +13,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(QTAPP_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
+option(WITH_QT_GUI_WEBENGINE "Include experimental webengine functionality" OFF)
+
 # Set cmake prefix path so it can find the Qt libraries
 if((${BUILD_32BIT}) AND (DEFINED ENV{QT_INSTALL_LOCATION32}))
   message(STATUS "Setting up a 32 bit Qt Build")
@@ -249,3 +251,13 @@ source_group(NewApi FILES ${NEW_API_SOURCES})
 
 source_group(Qt\\AutoMoc FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_automoc.cpp )
 source_group(Qt\\AutoMoc REGULAR_EXPRESSION "(mocs_*|qrc_.*|QtAwesome.*)" )
+
+install(TARGETS ${APP_NAME}
+  RUNTIME DESTINATION ${GUI_INSTALL_DIR}/qt
+)
+install(DIRECTORY fonts/ DESTINATION ${GUI_INSTALL_DIR}/qt/fonts)
+install(DIRECTORY help/ DESTINATION ${GUI_INSTALL_DIR}/qt/help)
+install(DIRECTORY html/ DESTINATION ${GUI_INSTALL_DIR}/qt/html)
+install(DIRECTORY images/ DESTINATION ${GUI_INSTALL_DIR}/qt/images)
+install(DIRECTORY lang/ DESTINATION ${GUI_INSTALL_DIR}/qt/lang)
+install(DIRECTORY theme/ DESTINATION ${GUI_INSTALL_DIR}/qt/theme)
