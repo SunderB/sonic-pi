@@ -44,14 +44,14 @@ fi
 cd "${SCRIPT_DIR}"
 
 # Build external dependencies and copy to build tree
-echo "Building external binary dependencies..."
+# echo "Building external binary dependencies..."
 "${SCRIPT_DIR}"/external/linux_build_externals.sh
 
-cp "${SCRIPT_DIR}"/external/build/aubio-prefix/src/aubio-build/aubio_onset "${SCRIPT_DIR}"/server/native/
+# cp "${SCRIPT_DIR}"/external/build/aubio-prefix/src/aubio-build/aubio_onset "${SCRIPT_DIR}"/server/native/
 
-mkdir -p "${SCRIPT_DIR}"/server/beam/tau/priv/
-cp "${SCRIPT_DIR}"/external/build/sp_midi-prefix/src/sp_midi-build/*.so "${SCRIPT_DIR}"/server/beam/tau/priv/
-cp "${SCRIPT_DIR}"/external/build/sp_link-prefix/src/sp_link-build/*.so "${SCRIPT_DIR}"/server/beam/tau/priv/
+# mkdir -p "${SCRIPT_DIR}"/server/beam/tau/priv/
+# cp "${SCRIPT_DIR}"/external/build/sp_midi-prefix/src/sp_midi-build/*.so "${SCRIPT_DIR}"/server/beam/tau/priv/
+# cp "${SCRIPT_DIR}"/external/build/sp_link-prefix/src/sp_link-build/*.so "${SCRIPT_DIR}"/server/beam/tau/priv/
 
 echo "Compiling native ruby extensions..."
 ruby "${SCRIPT_DIR}"/server/ruby/bin/compile-extensions.rb
@@ -66,16 +66,16 @@ ruby "${SCRIPT_DIR}"/server/ruby/bin/qt-doc.rb -o "${SCRIPT_DIR}"/gui/qt/utils/r
 echo "Updating GUI translation files..."
 PATH=`pkg-config --variable bindir Qt5`:$PATH lrelease "${SCRIPT_DIR}"/gui/qt/lang/*.ts
 
-echo "Compiling Erlang/Elixir files..."
-cd "${SCRIPT_DIR}"/server/beam/tau
+# echo "Compiling Erlang/Elixir files..."
+# cd "${SCRIPT_DIR}"/server/beam/tau
 
-MIX_ENV=prod mix local.hex --force
-MIX_ENV=prod mix local.rebar --force
-MIX_ENV=prod mix deps.get
-MIX_ENV=prod mix assets.deploy
-MIX_ENV=prod mix release --overwrite
+# MIX_ENV=prod mix local.hex --force
+# MIX_ENV=prod mix local.rebar --force
+# MIX_ENV=prod mix deps.get
+# MIX_ENV=prod mix assets.deploy
+# MIX_ENV=prod mix release --overwrite
 
-cp src/tau.app.src ebin/tau.app
+# cp src/tau.app.src ebin/tau.app
 
 # Restore working directory as it was prior to this script running...
 cd "${WORKING_DIR}"
