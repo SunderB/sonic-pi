@@ -102,3 +102,8 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS _WINSO
 source_group ("Api" FILES ${API_SRC})
 source_group ("Api\\Osc" FILES ${OSC_SRC})
 source_group ("Api\\Audio" FILES ${BUFFER_SRC})
+
+install(TARGETS ${PROJECT_NAME}
+ARCHIVE DESTINATION ${API_INSTALL_DIR}
+INCLUDES DESTINATION ${API_INSTALL_DIR}/include
+)

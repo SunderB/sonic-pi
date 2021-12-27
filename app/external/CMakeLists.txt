@@ -17,8 +17,9 @@ project(AubioBuilder
 ExternalProject_Add(sp_midi
     PREFIX sp_midi-prefix
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/sp_midi
-    INSTALL_COMMAND ""
+    INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../server/beam/tau/priv
     CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/../server/beam/tau/priv
         -DERLANG_INCLUDE_PATH=${ERLANG_INCLUDE_PATH}
         -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
     BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
@@ -27,8 +28,9 @@ ExternalProject_Add(sp_midi
 ExternalProject_Add(sp_link
     PREFIX sp_link-prefix
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/sp_link
-    INSTALL_COMMAND ""
+    INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../server/beam/tau/priv
     CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/../server/beam/tau/priv
         -DERLANG_INCLUDE_PATH=${ERLANG_INCLUDE_PATH}
         -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
     BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
@@ -141,7 +143,8 @@ ExternalProject_Add(aubio
         -DPC_VORBISENC_INCLUDE_DIRS=${CMAKE_BINARY_DIR}/vorbis-package/include
         -DPC_OPUS_INCLUDE_DIRS=${CMAKE_BINARY_DIR}/opus-package/include
         -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-    INSTALL_COMMAND ""
+    INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../server/native
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/../server/native
     )
 
 # Kick off a generation by making a dummy/empty project
