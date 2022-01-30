@@ -2,12 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 
 message(STATUS " CMakeLists: Sonic Pi")
 
-project("Sonic Pi"
-    LANGUAGES CXX C
-  DESCRIPTION "A code-based music creation and performance tool"
-  VERSION 3.3.1
-  HOMEPAGE_URL "https://sonic-pi.net"
-    )
+project("Sonic Pi Qt GUI")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -254,10 +249,11 @@ source_group(Qt\\AutoMoc REGULAR_EXPRESSION "(mocs_*|qrc_.*|QtAwesome.*)" )
 
 install(TARGETS ${APP_NAME}
   RUNTIME DESTINATION ${GUI_INSTALL_DIR}/qt
+  COMPONENT sonic_pi_qt_gui
 )
-install(DIRECTORY fonts/ DESTINATION ${GUI_INSTALL_DIR}/qt/fonts)
-install(DIRECTORY help/ DESTINATION ${GUI_INSTALL_DIR}/qt/help)
-install(DIRECTORY html/ DESTINATION ${GUI_INSTALL_DIR}/qt/html)
-install(DIRECTORY images/ DESTINATION ${GUI_INSTALL_DIR}/qt/images)
-install(DIRECTORY lang/ DESTINATION ${GUI_INSTALL_DIR}/qt/lang)
-install(DIRECTORY theme/ DESTINATION ${GUI_INSTALL_DIR}/qt/theme)
+install(DIRECTORY fonts/  DESTINATION ${GUI_INSTALL_DIR}/qt/fonts   COMPONENT sonic_pi_qt_gui)
+install(DIRECTORY help/   DESTINATION ${GUI_INSTALL_DIR}/qt/help    COMPONENT sonic_pi_qt_gui)
+install(DIRECTORY html/   DESTINATION ${GUI_INSTALL_DIR}/qt/html    COMPONENT sonic_pi_qt_gui)
+install(DIRECTORY images/ DESTINATION ${GUI_INSTALL_DIR}/qt/images  COMPONENT sonic_pi_qt_gui)
+install(DIRECTORY lang/   DESTINATION ${GUI_INSTALL_DIR}/qt/lang    COMPONENT sonic_pi_qt_gui)
+install(DIRECTORY theme/  DESTINATION ${GUI_INSTALL_DIR}/qt/theme   COMPONENT sonic_pi_qt_gui)

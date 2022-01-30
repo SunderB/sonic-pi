@@ -40,4 +40,5 @@ install(
     DIRECTORY tau/
     DESTINATION ${SERVER_INSTALL_DIR}/beam/tau
     USE_SOURCE_PERMISSIONS
+    COMPONENT sonic_pi_server
 )
