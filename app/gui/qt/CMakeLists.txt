@@ -13,6 +13,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(QTAPP_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
+option(WITH_QT_GUI_WEBENGINE "Include experimental webengine functionality" OFF)
+
 # Set cmake prefix path so it can find the Qt libraries
 if((${BUILD_32BIT}) AND (DEFINED ENV{QT_INSTALL_LOCATION32}))
   message(STATUS "Setting up a 32 bit Qt Build")
