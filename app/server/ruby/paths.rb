@@ -144,9 +144,9 @@ module SonicPi
     def self.aubio_onset_path
       case os
       when :windows
-        File.absolute_path("#{native_path}/aubio_onset.exe")
+        File.absolute_path("#{native_path}/bin/aubio_onset.exe")
       else
-        File.absolute_path("#{native_path}/aubio_onset")
+        File.absolute_path("#{native_path}/bin/aubio_onset")
       end
     end
 

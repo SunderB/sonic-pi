@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
+include(GNUInstallDirs)
 
 project(aubio-5)
 set(SOURCE_ROOT ${CMAKE_CURRENT_LIST_DIR}/src)
@@ -250,3 +251,9 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES Darwin) # macOS
 else()
     message(FATAL_ERROR "Aubio is not supported on this platform.")
 endif()
+
+install(
+    TARGETS ${PROJECT_NAME} aubio_onset
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

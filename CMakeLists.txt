@@ -40,5 +40,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include(cmake/utils.cmake)
 include(cmake/common.cmake)
 
+set(RUBY_CMD "ruby")
+
 ### Add subdirectories
 add_subdirectory(app)

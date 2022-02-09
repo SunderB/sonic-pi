@@ -1,5 +1,6 @@
 project (sp_link)
 cmake_minimum_required (VERSION 3.0)
+include(GNUInstallDirs)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -75,3 +76,5 @@ elseif(UNIX)
     include_directories(${ERLANG_INCLUDE_PATH})
     target_link_libraries(libsp_link Ableton::Link)
 endif(MSVC)
+
+install(TARGETS libsp_link LIBRARY DESTINATION priv)

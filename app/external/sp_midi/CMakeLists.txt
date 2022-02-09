@@ -1,5 +1,6 @@
 project (sp_midi)
 cmake_minimum_required (VERSION 3.0)
+include(GNUInstallDirs)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -84,3 +85,5 @@ elseif(UNIX)
     include_directories(${ERLANG_INCLUDE_PATH})
     target_link_libraries(libsp_midi pthread ${ALSA_LIBRARY} dl rtmidi)
 endif(MSVC)
+
+install(TARGETS libsp_midi LIBRARY DESTINATION priv)
